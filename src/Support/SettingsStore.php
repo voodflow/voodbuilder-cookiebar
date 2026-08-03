@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Support;
+namespace Voodflow\Vcookiebar\Support;
 
 use Illuminate\Support\Facades\Cache;
-use Voodflow\Vookiebar\Vookiebar;
+use Voodflow\Vcookiebar\Vcookiebar;
 
 /**
  * Admin-editable settings layered over published config defaults.
@@ -15,7 +15,7 @@ use Voodflow\Vookiebar\Vookiebar;
  */
 final class SettingsStore
 {
-    public const CACHE_KEY = 'vookiebar.settings';
+    public const CACHE_KEY = 'vcookiebar.settings';
 
     /**
      * @return array<string, mixed>
@@ -23,10 +23,10 @@ final class SettingsStore
     public static function defaults(): array
     {
         return [
-            'enabled' => Vookiebar::isEnabled(),
-            'privacy_policy_url' => config('vookiebar.privacy_policy_url'),
-            'consent_cookie' => config('vookiebar.consent_cookie', 'vookiebar_consent'),
-            'defaults' => Vookiebar::defaultPreferences(),
+            'enabled' => Vcookiebar::isEnabled(),
+            'privacy_policy_url' => config('vcookiebar.privacy_policy_url'),
+            'consent_cookie' => config('vcookiebar.consent_cookie', 'vcookiebar_consent'),
+            'defaults' => Vcookiebar::defaultPreferences(),
         ];
     }
 
@@ -55,7 +55,7 @@ final class SettingsStore
             'privacy_policy_url' => filled($data['privacy_policy_url'] ?? null)
                 ? (string) $data['privacy_policy_url']
                 : null,
-            'consent_cookie' => (string) ($data['consent_cookie'] ?? 'vookiebar_consent'),
+            'consent_cookie' => (string) ($data['consent_cookie'] ?? 'vcookiebar_consent'),
             'defaults' => ConsentPayload::normalize(
                 is_array($data['defaults'] ?? null) ? $data['defaults'] : [],
             ),
@@ -65,10 +65,10 @@ final class SettingsStore
 
         // Mirror into runtime config for the current process.
         config([
-            'vookiebar.enabled' => $allowed['enabled'],
-            'vookiebar.privacy_policy_url' => $allowed['privacy_policy_url'],
-            'vookiebar.consent_cookie' => $allowed['consent_cookie'],
-            'vookiebar.defaults' => $allowed['defaults'],
+            'vcookiebar.enabled' => $allowed['enabled'],
+            'vcookiebar.privacy_policy_url' => $allowed['privacy_policy_url'],
+            'vcookiebar.consent_cookie' => $allowed['consent_cookie'],
+            'vcookiebar.defaults' => $allowed['defaults'],
         ]);
     }
 

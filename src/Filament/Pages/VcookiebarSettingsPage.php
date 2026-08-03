@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Filament\Pages;
+namespace Voodflow\Vcookiebar\Filament\Pages;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -16,21 +16,21 @@ use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
-use Voodflow\Vookiebar\Support\Navigation;
-use Voodflow\Vookiebar\Support\SettingsStore;
+use Voodflow\Vcookiebar\Support\Navigation;
+use Voodflow\Vcookiebar\Support\SettingsStore;
 
 /**
- * Independent Vookiebar settings (not under any page-builder settings screen).
+ * Independent Vcookiebar settings (not under any page-builder settings screen).
  *
  * @property-read Schema $form
  */
-class VookiebarSettingsPage extends Page
+class VcookiebarSettingsPage extends Page
 {
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
 
     protected static ?int $navigationSort = 90;
 
-    protected static ?string $slug = 'vookiebar.settings';
+    protected static ?string $slug = 'vcookiebar.settings';
 
     /** @var array<string, mixed>|null */
     public ?array $data = [];
@@ -42,7 +42,7 @@ class VookiebarSettingsPage extends Page
 
     public static function getNavigationLabel(): string
     {
-        return (string) __('vookiebar::admin.navigation.settings');
+        return (string) __('vcookiebar::admin.navigation.settings');
     }
 
     public function mount(): void
@@ -55,7 +55,7 @@ class VookiebarSettingsPage extends Page
         SettingsStore::save($this->form->getState());
 
         Notification::make()
-            ->title(__('vookiebar::admin.notifications.settings_saved'))
+            ->title(__('vcookiebar::admin.notifications.settings_saved'))
             ->success()
             ->send();
     }
@@ -68,34 +68,34 @@ class VookiebarSettingsPage extends Page
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(__('vookiebar::admin.sections.general'))
+            Section::make(__('vcookiebar::admin.sections.general'))
                 ->schema([
                     Toggle::make('enabled')
-                        ->label(__('vookiebar::admin.fields.enabled'))
-                        ->helperText(__('vookiebar::admin.fields.enabled_help')),
+                        ->label(__('vcookiebar::admin.fields.enabled'))
+                        ->helperText(__('vcookiebar::admin.fields.enabled_help')),
                     TextInput::make('privacy_policy_url')
-                        ->label(__('vookiebar::admin.fields.privacy_policy_url'))
+                        ->label(__('vcookiebar::admin.fields.privacy_policy_url'))
                         ->url()
                         ->maxLength(2048),
                     TextInput::make('consent_cookie')
-                        ->label(__('vookiebar::admin.fields.consent_cookie'))
+                        ->label(__('vcookiebar::admin.fields.consent_cookie'))
                         ->required()
                         ->alphaDash()
                         ->maxLength(64),
                 ]),
-            Section::make(__('vookiebar::admin.sections.defaults'))
-                ->description(__('vookiebar::admin.sections.defaults_help'))
+            Section::make(__('vcookiebar::admin.sections.defaults'))
+                ->description(__('vcookiebar::admin.sections.defaults_help'))
                 ->schema([
                     Toggle::make('defaults.necessary')
-                        ->label(__('vookiebar::admin.fields.category_necessary'))
+                        ->label(__('vcookiebar::admin.fields.category_necessary'))
                         ->disabled()
                         ->dehydrated(),
                     Toggle::make('defaults.preferences')
-                        ->label(__('vookiebar::admin.fields.category_preferences')),
+                        ->label(__('vcookiebar::admin.fields.category_preferences')),
                     Toggle::make('defaults.analytics')
-                        ->label(__('vookiebar::admin.fields.category_analytics')),
+                        ->label(__('vcookiebar::admin.fields.category_analytics')),
                     Toggle::make('defaults.marketing')
-                        ->label(__('vookiebar::admin.fields.category_marketing')),
+                        ->label(__('vcookiebar::admin.fields.category_marketing')),
                 ]),
         ]);
     }
@@ -110,12 +110,12 @@ class VookiebarSettingsPage extends Page
     public function getFormContentComponent(): Component
     {
         return Form::make([EmbeddedSchema::make('form')])
-            ->id('vookiebar.settings-form')
+            ->id('vcookiebar.settings-form')
             ->livewireSubmitHandler('save')
             ->footer([
                 Actions::make([
                     Action::make('save')
-                        ->label(__('vookiebar::admin.actions.save'))
+                        ->label(__('vcookiebar::admin.actions.save'))
                         ->submit('save')
                         ->keyBindings(['mod+s']),
                 ]),
@@ -124,6 +124,6 @@ class VookiebarSettingsPage extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return __('vookiebar::admin.pages.settings_title');
+        return __('vcookiebar::admin.pages.settings_title');
     }
 }

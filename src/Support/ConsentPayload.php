@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Support;
+namespace Voodflow\Vcookiebar\Support;
 
-use Voodflow\Vookiebar\Vookiebar;
+use Voodflow\Vcookiebar\Vcookiebar;
 
 /**
  * Normalizes and encodes visitor consent preferences for the consent cookie.
@@ -17,9 +17,9 @@ final class ConsentPayload
      */
     public static function normalize(array $preferences): array
     {
-        $normalized = Vookiebar::defaultPreferences();
+        $normalized = Vcookiebar::defaultPreferences();
 
-        foreach (Vookiebar::allowedCategories() as $category) {
+        foreach (Vcookiebar::allowedCategories() as $category) {
             if (! array_key_exists($category, $preferences)) {
                 continue;
             }

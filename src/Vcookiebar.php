@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar;
+namespace Voodflow\Vcookiebar;
 
 /**
- * Runtime helpers for the Vookiebar package.
+ * Runtime helpers for the Vcookiebar package.
  *
  * Installing the Composer package alone is not enough for Filament admin UI:
- * the host must register VookiebarPlugin on a panel. Public consent routes
+ * the host must register VcookiebarPlugin on a panel. Public consent routes
  * load from the service provider whenever the package is enabled.
  */
-final class Vookiebar
+final class Vcookiebar
 {
     private static bool $activated = false;
 
@@ -32,7 +32,7 @@ final class Vookiebar
 
     public static function isEnabled(): bool
     {
-        return (bool) config('vookiebar.enabled', true);
+        return (bool) config('vcookiebar.enabled', true);
     }
 
     /**
@@ -41,7 +41,7 @@ final class Vookiebar
     public static function allowedCategories(): array
     {
         /** @var list<string>|mixed $categories */
-        $categories = config('vookiebar.categories', []);
+        $categories = config('vcookiebar.categories', []);
 
         if (! is_array($categories)) {
             return [];
@@ -59,7 +59,7 @@ final class Vookiebar
     public static function defaultPreferences(): array
     {
         /** @var array<string, mixed>|mixed $defaults */
-        $defaults = config('vookiebar.defaults', []);
+        $defaults = config('vcookiebar.defaults', []);
 
         if (! is_array($defaults)) {
             return [];

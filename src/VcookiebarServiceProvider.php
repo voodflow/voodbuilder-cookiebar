@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar;
+namespace Voodflow\Vcookiebar;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class VookiebarServiceProvider extends PackageServiceProvider
+class VcookiebarServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'vookiebar';
+    public static string $name = 'vcookiebar';
 
-    public static string $viewNamespace = 'vookiebar';
+    public static string $viewNamespace = 'vcookiebar';
 
     public function configurePackage(Package $package): void
     {

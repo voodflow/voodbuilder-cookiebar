@@ -19,7 +19,7 @@ return [
     | Public route prefix
     |--------------------------------------------------------------------------
     */
-    'route_prefix' => env('VOOKIEBAR_ROUTE_PREFIX', 'vookiebar'),
+    'route_prefix' => env('VOOKIEBAR_ROUTE_PREFIX', 'vcookiebar'),
 
     /*
     |--------------------------------------------------------------------------
@@ -67,7 +67,7 @@ return [
     | Cookie name used to store the visitor consent snapshot
     |--------------------------------------------------------------------------
     */
-    'consent_cookie' => env('VOOKIEBAR_CONSENT_COOKIE', 'vookiebar_consent'),
+    'consent_cookie' => env('VOOKIEBAR_CONSENT_COOKIE', 'vcookiebar_consent'),
 
     /*
     |--------------------------------------------------------------------------

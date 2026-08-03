@@ -3,29 +3,29 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Voodflow\Vookiebar\Http\Controllers\ConsentController;
-use Voodflow\Vookiebar\Vookiebar;
+use Voodflow\Vcookiebar\Http\Controllers\ConsentController;
+use Voodflow\Vcookiebar\Vcookiebar;
 
 /*
 |--------------------------------------------------------------------------
-| Vookiebar public routes
+| Vcookiebar public routes
 |--------------------------------------------------------------------------
 |
 | Consent endpoints are independent of any page builder. They load whenever
-| the package is installed and enabled. Admin UI requires VookiebarPlugin.
+| the package is installed and enabled. Admin UI requires VcookiebarPlugin.
 |
 */
 
-if (! Vookiebar::isEnabled()) {
+if (! Vcookiebar::isEnabled()) {
     return;
 }
 
-$prefix = (string) config('vookiebar.route_prefix', 'vookiebar');
-$throttle = max(1, (int) config('vookiebar.consent_throttle', 60));
+$prefix = (string) config('vcookiebar.route_prefix', 'vcookiebar');
+$throttle = max(1, (int) config('vcookiebar.consent_throttle', 60));
 
 Route::middleware(['web', "throttle:{$throttle},1"])
     ->prefix($prefix)
-    ->name('vookiebar.')
+    ->name('vcookiebar.')
     ->group(function (): void {
         Route::post('consent', [ConsentController::class, 'store'])
             ->name('consent.store');

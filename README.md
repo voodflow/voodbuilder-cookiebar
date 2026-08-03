@@ -1,28 +1,28 @@
-# voodflow/vookiebar
+# voodflow/vcookiebar
 
 Cookie consent bar for Laravel and Filament 5. Independent of any page builder: own routes, own Filament navigation group, own settings.
 
 ## Install
 
 ```bash
-composer require voodflow/vookiebar
+composer require voodflow/vcookiebar
 ```
 
 Publish config (optional):
 
 ```bash
-php artisan vendor:publish --tag=vookiebar-config
+php artisan vendor:publish --tag=vcookiebar-config
 ```
 
 Register the Filament plugin on your panel:
 
 ```php
 ->plugins([
-    \Voodflow\Vookiebar\VookiebarPlugin::make(),
+    \Voodflow\Vcookiebar\VcookiebarPlugin::make(),
 ])
 ```
 
-Omitting `VookiebarPlugin` hides admin pages. Public consent routes still load while `vookiebar.enabled` is true.
+Omitting `VcookiebarPlugin` hides admin pages. Public consent routes still load while `vcookiebar.enabled` is true.
 
 ## Documentation
 

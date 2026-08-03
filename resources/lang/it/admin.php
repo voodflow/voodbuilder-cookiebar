@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 return [
     'navigation' => [
-        'group' => 'Vookiebar',
+        'group' => 'Vcookiebar',
         'settings' => 'Impostazioni',
         'label' => 'Cookie Bar',
     ],
 
     'pages' => [
-        'settings_title' => 'Impostazioni Vookiebar',
+        'settings_title' => 'Impostazioni Vcookiebar',
     ],
 
     'sections' => [
@@ -35,6 +35,6 @@ return [
     ],
 
     'notifications' => [
-        'settings_saved' => 'Impostazioni Vookiebar salvate.',
+        'settings_saved' => 'Impostazioni Vcookiebar salvate.',
     ],
 ];

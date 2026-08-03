@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Tests\Feature;
+namespace Voodflow\Vcookiebar\Tests\Feature;
 
 use Illuminate\Support\Facades\Route;
-use Voodflow\Vookiebar\Tests\TestCase;
+use Voodflow\Vcookiebar\Tests\TestCase;
 
 class ConsentEndpointSecurityTest extends TestCase
 {
     public function test_consent_endpoint_is_guarded_by_web_stack(): void
     {
-        $route = Route::getRoutes()->getByName('vookiebar.consent.store');
+        $route = Route::getRoutes()->getByName('vcookiebar.consent.store');
 
         $this->assertNotNull($route);
 
@@ -26,7 +26,7 @@ class ConsentEndpointSecurityTest extends TestCase
     {
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
 
-        $this->postJson(route('vookiebar.consent.store'), [
+        $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => [
                 'necessary' => true,
                 'tracking_pixel' => true,
@@ -39,7 +39,7 @@ class ConsentEndpointSecurityTest extends TestCase
     {
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
 
-        $response = $this->postJson(route('vookiebar.consent.store'), [
+        $response = $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => [
                 'necessary' => false,
                 'preferences' => true,
@@ -53,10 +53,10 @@ class ConsentEndpointSecurityTest extends TestCase
             ->assertJsonPath('preferences.necessary', true)
             ->assertJsonPath('preferences.preferences', true);
 
-        $response->assertCookie('vookiebar_consent');
+        $response->assertCookie('vcookiebar_consent');
 
         $cookie = collect($response->headers->getCookies())
-            ->first(fn ($cookie): bool => $cookie->getName() === 'vookiebar_consent');
+            ->first(fn ($cookie): bool => $cookie->getName() === 'vcookiebar_consent');
 
         $this->assertNotNull($cookie);
         $this->assertTrue($cookie->isHttpOnly());
@@ -67,7 +67,7 @@ class ConsentEndpointSecurityTest extends TestCase
     {
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
 
-        $this->postJson(route('vookiebar.consent.store'), [
+        $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => [
                 'necessary' => true,
                 'analytics' => 'yes',
@@ -77,7 +77,7 @@ class ConsentEndpointSecurityTest extends TestCase
 
     public function test_consent_route_uses_web_and_throttle_middleware(): void
     {
-        $route = Route::getRoutes()->getByName('vookiebar.consent.store');
+        $route = Route::getRoutes()->getByName('vcookiebar.consent.store');
 
         $this->assertNotNull($route);
 
@@ -93,16 +93,16 @@ class ConsentEndpointSecurityTest extends TestCase
 
     public function test_consent_returns_404_when_package_disabled(): void
     {
-        config(['vookiebar.enabled' => false]);
+        config(['vcookiebar.enabled' => false]);
 
         $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
 
         // Route may still be registered from boot; controller must refuse.
-        if (! $this->app['router']->has('vookiebar.consent.store')) {
+        if (! $this->app['router']->has('vcookiebar.consent.store')) {
             $this->markTestSkipped('Consent route not registered while disabled at boot.');
         }
 
-        $this->postJson(route('vookiebar.consent.store'), [
+        $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => ['necessary' => true],
         ])->assertNotFound();
     }

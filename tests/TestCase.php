@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Tests;
+namespace Voodflow\Vcookiebar\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Voodflow\Vookiebar\Vookiebar;
-use Voodflow\Vookiebar\VookiebarServiceProvider;
+use Voodflow\Vcookiebar\Vcookiebar;
+use Voodflow\Vcookiebar\VcookiebarServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -14,13 +14,13 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        Vookiebar::reset();
+        Vcookiebar::reset();
     }
 
     protected function getPackageProviders($app): array
     {
         return [
-            VookiebarServiceProvider::class,
+            VcookiebarServiceProvider::class,
         ];
     }
 

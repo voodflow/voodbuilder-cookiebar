@@ -5,7 +5,7 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Vookiebar Test Suite">
+        <testsuite name="Vcookiebar Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

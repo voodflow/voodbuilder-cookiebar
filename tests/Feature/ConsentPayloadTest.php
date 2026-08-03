@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Tests\Feature;
+namespace Voodflow\Vcookiebar\Tests\Feature;
 
-use Voodflow\Vookiebar\Support\ConsentPayload;
-use Voodflow\Vookiebar\Tests\TestCase;
+use Voodflow\Vcookiebar\Support\ConsentPayload;
+use Voodflow\Vcookiebar\Tests\TestCase;
 
 class ConsentPayloadTest extends TestCase
 {

@@ -1,12 +1,12 @@
-# Vookiebar — user manual
+# Vcookiebar — user manual
 
 ## What it does
 
-Vookiebar shows a cookie consent bar and stores visitor preferences. Administrators configure defaults and privacy links from Filament under the **Vookiebar** navigation group.
+Vcookiebar shows a cookie consent bar and stores visitor preferences. Administrators configure defaults and privacy links from Filament under the **Vcookiebar** navigation group.
 
 ## Settings
 
-Open **Vookiebar → Settings**:
+Open **Vcookiebar → Settings**:
 
 | Field | Purpose |
 | --- | --- |

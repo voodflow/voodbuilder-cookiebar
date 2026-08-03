@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Support;
+namespace Voodflow\Vcookiebar\Support;
 
 /**
- * Filament navigation helpers owned by Vookiebar (independent category).
+ * Filament navigation helpers owned by Vcookiebar (independent category).
  */
 final class Navigation
 {
     public static function group(): string
     {
-        return (string) __('vookiebar::admin.navigation.group');
+        return (string) __('vcookiebar::admin.navigation.group');
     }
 }

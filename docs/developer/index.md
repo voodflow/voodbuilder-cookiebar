@@ -1,43 +1,43 @@
-# Vookiebar — developer manual
+# Vcookiebar — developer manual
 
 ## Package identity
 
 | Item | Value |
 | --- | --- |
-| Composer | `voodflow/vookiebar` |
-| Namespace | `Voodflow\Vookiebar` |
-| Config | `config/vookiebar.php` |
-| Filament plugin id | `vookiebar` |
-| Navigation group | Own group (`Vookiebar`), not under any page builder |
+| Composer | `voodflow/vcookiebar` |
+| Namespace | `Voodflow\Vcookiebar` |
+| Config | `config/vcookiebar.php` |
+| Filament plugin id | `vcookiebar` |
+| Navigation group | Own group (`Vcookiebar`), not under any page builder |
 
 The package is intentionally agnostic: it does not require a page builder or other Voodflow plugins.
 
 ## Install
 
 ```bash
-composer require voodflow/vookiebar
-php artisan vendor:publish --tag=vookiebar-config
+composer require voodflow/vcookiebar
+php artisan vendor:publish --tag=vcookiebar-config
 ```
 
 Register on a Filament panel:
 
 ```php
-use Voodflow\Vookiebar\VookiebarPlugin;
+use Voodflow\Vcookiebar\VcookiebarPlugin;
 
 $panel->plugins([
-    VookiebarPlugin::make(),
+    VcookiebarPlugin::make(),
 ]);
 ```
 
 ## Routes
 
-When `vookiebar.enabled` is true:
+When `vcookiebar.enabled` is true:
 
 | Method | Path | Name |
 | --- | --- | --- |
-| `POST` | `/{route_prefix}/consent` | `vookiebar.consent.store` |
+| `POST` | `/{route_prefix}/consent` | `vcookiebar.consent.store` |
 
-Default prefix: `vookiebar`. Middleware: `web` + throttle (`vookiebar.consent_throttle` requests/minute).
+Default prefix: `vcookiebar`. Middleware: `web` + throttle (`vcookiebar.consent_throttle` requests/minute).
 
 ### Consent payload
 
@@ -62,7 +62,7 @@ Security rules:
 
 ## Config keys
 
-See `config/vookiebar.php`. Environment overrides:
+See `config/vcookiebar.php`. Environment overrides:
 
 - `VOOKIEBAR_ENABLED`
 - `VOOKIEBAR_ROUTE_PREFIX`
@@ -75,9 +75,9 @@ Admin settings are layered via `SettingsStore` (application cache) over config d
 
 ## Extension points
 
-- `Voodflow\Vookiebar\Vookiebar` — enablement and category helpers
-- `Voodflow\Vookiebar\Support\ConsentPayload` — normalize / encode / decode
-- `Voodflow\Vookiebar\Support\SettingsStore` — admin persistence
-- `Voodflow\Vookiebar\Filament\Pages\VookiebarSettingsPage` — Filament settings
+- `Voodflow\Vcookiebar\Vcookiebar` — enablement and category helpers
+- `Voodflow\Vcookiebar\Support\ConsentPayload` — normalize / encode / decode
+- `Voodflow\Vcookiebar\Support\SettingsStore` — admin persistence
+- `Voodflow\Vcookiebar\Filament\Pages\VcookiebarSettingsPage` — Filament settings
 
 Optional page-builder integration can be added later without coupling this core package.

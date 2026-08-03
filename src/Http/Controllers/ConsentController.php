@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Voodflow\Vookiebar\Http\Controllers;
+namespace Voodflow\Vcookiebar\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\ValidationException;
-use Voodflow\Vookiebar\Support\ConsentPayload;
-use Voodflow\Vookiebar\Vookiebar;
+use Voodflow\Vcookiebar\Support\ConsentPayload;
+use Voodflow\Vcookiebar\Vcookiebar;
 
 /**
  * Stores visitor cookie-preference choices.
@@ -21,11 +21,11 @@ final class ConsentController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
-        if (! Vookiebar::isEnabled()) {
+        if (! Vcookiebar::isEnabled()) {
             abort(404);
         }
 
-        $allowed = Vookiebar::allowedCategories();
+        $allowed = Vcookiebar::allowedCategories();
 
         $validated = $request->validate([
             'preferences' => ['required', 'array'],
@@ -39,7 +39,7 @@ final class ConsentController extends Controller
 
         if ($unknown !== []) {
             throw ValidationException::withMessages([
-                'preferences' => __('vookiebar::runtime.consent.unknown_categories'),
+                'preferences' => __('vcookiebar::runtime.consent.unknown_categories'),
             ]);
         }
 
@@ -51,15 +51,15 @@ final class ConsentController extends Controller
             // Reject non-boolean after casting edge cases from JSON.
             if (! is_bool($preferences[$category])) {
                 throw ValidationException::withMessages([
-                    "preferences.{$category}" => __('vookiebar::runtime.consent.invalid_preference'),
+                    "preferences.{$category}" => __('vcookiebar::runtime.consent.invalid_preference'),
                 ]);
             }
         }
 
         $normalized = ConsentPayload::normalize($preferences);
 
-        $cookieName = (string) config('vookiebar.consent_cookie', 'vookiebar_consent');
-        $lifetime = max(1, (int) config('vookiebar.consent_lifetime_minutes', 60 * 24 * 365));
+        $cookieName = (string) config('vcookiebar.consent_cookie', 'vcookiebar_consent');
+        $lifetime = max(1, (int) config('vcookiebar.consent_lifetime_minutes', 60 * 24 * 365));
 
         $payload = ConsentPayload::encode($normalized);
 
