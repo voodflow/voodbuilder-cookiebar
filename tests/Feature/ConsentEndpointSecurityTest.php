@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Voodflow\Vcookiebar\Tests\Feature;
 
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Voodflow\Vcookiebar\Tests\TestCase;
 
@@ -24,7 +25,7 @@ class ConsentEndpointSecurityTest extends TestCase
 
     public function test_consent_rejects_unknown_categories(): void
     {
-        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+        $this->withoutMiddleware(ValidateCsrfToken::class);
 
         $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => [
@@ -37,7 +38,7 @@ class ConsentEndpointSecurityTest extends TestCase
 
     public function test_consent_forces_necessary_and_sets_httponly_cookie(): void
     {
-        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+        $this->withoutMiddleware(ValidateCsrfToken::class);
 
         $response = $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => [
@@ -65,7 +66,7 @@ class ConsentEndpointSecurityTest extends TestCase
 
     public function test_consent_rejects_non_boolean_preference_values(): void
     {
-        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+        $this->withoutMiddleware(ValidateCsrfToken::class);
 
         $this->postJson(route('vcookiebar.consent.store'), [
             'preferences' => [
@@ -95,7 +96,7 @@ class ConsentEndpointSecurityTest extends TestCase
     {
         config(['vcookiebar.enabled' => false]);
 
-        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+        $this->withoutMiddleware(ValidateCsrfToken::class);
 
         // Route may still be registered from boot; controller must refuse.
         if (! $this->app['router']->has('vcookiebar.consent.store')) {

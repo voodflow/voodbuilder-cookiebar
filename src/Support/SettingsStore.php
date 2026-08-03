@@ -76,4 +76,28 @@ final class SettingsStore
     {
         Cache::forget(self::CACHE_KEY);
     }
+
+    /**
+     * Apply cached admin settings onto runtime config for this request.
+     */
+    public static function hydrateRuntimeConfig(): void
+    {
+        /** @var array<string, mixed> $stored */
+        $stored = Cache::get(self::CACHE_KEY, []);
+
+        if (! is_array($stored) || $stored === []) {
+            return;
+        }
+
+        $merged = array_replace_recursive(self::defaults(), $stored);
+
+        config([
+            'vcookiebar.enabled' => (bool) ($merged['enabled'] ?? true),
+            'vcookiebar.privacy_policy_url' => $merged['privacy_policy_url'] ?? null,
+            'vcookiebar.consent_cookie' => (string) ($merged['consent_cookie'] ?? 'vcookiebar_consent'),
+            'vcookiebar.defaults' => is_array($merged['defaults'] ?? null)
+                ? ConsentPayload::normalize($merged['defaults'])
+                : Vcookiebar::defaultPreferences(),
+        ]);
+    }
 }

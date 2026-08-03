@@ -75,4 +75,35 @@ return [
     |--------------------------------------------------------------------------
     */
     'consent_lifetime_minutes' => (int) env('VCOOKIEBAR_CONSENT_LIFETIME', 60 * 24 * 365),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Public banner
+    |--------------------------------------------------------------------------
+    */
+    'banner' => [
+        'enabled' => env('VCOOKIEBAR_BANNER_ENABLED', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-inject banner into known public layouts
+    |--------------------------------------------------------------------------
+    |
+    | When true, the package pushes <x-vcookiebar::banner /> onto the overlays
+    | stack of the listed views (typically page-builder layouts). Standalone
+    | hosts can set this to false and include the component manually.
+    |
+    */
+    'auto_inject' => env('VCOOKIEBAR_AUTO_INJECT', true),
+
+    'auto_inject_views' => [
+        'voodbuilder::layouts.app',
+        'voodbuilder::layouts.chrome-app',
+        'voodbuilder::layouts.page',
+        'voodbuilder::layouts.landing',
+        'voodbuilder::layouts.home',
+        'voodbuilder::layouts.doc',
+        'voodbuilder::layouts.full-width',
+    ],
 ];

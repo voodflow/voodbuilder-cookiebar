@@ -21,7 +21,7 @@ return [
 
     'fields' => [
         'enabled' => 'Activar cookie bar',
-        'enabled_help' => 'Desactiva el endpoint público de consentimiento y el runtime.',
+        'enabled_help' => 'Desactiva el banner público, el endpoint de consentimiento y el runtime.',
         'privacy_policy_url' => 'URL de política de privacidad',
         'consent_cookie' => 'Nombre de la cookie de consentimiento',
         'category_necessary' => 'Necesarias',

@@ -21,7 +21,7 @@ return [
 
     'fields' => [
         'enabled' => 'Enable cookie bar',
-        'enabled_help' => 'Disables the public consent endpoint and runtime when off.',
+        'enabled_help' => 'Disables the public consent banner, endpoint, and runtime when off.',
         'privacy_policy_url' => 'Privacy policy URL',
         'consent_cookie' => 'Consent cookie name',
         'category_necessary' => 'Necessary',

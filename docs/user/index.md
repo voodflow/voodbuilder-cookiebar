@@ -17,8 +17,9 @@ Open **Vcookiebar → Settings**:
 
 ## Visitor flow
 
-1. The site loads the consent bar (frontend assets land in a later release).
-2. The visitor accepts or customizes categories.
-3. Preferences are posted to the consent endpoint and stored in a first-party cookie.
+1. On first visit the public banner appears (bottom of the page).
+2. The visitor accepts all, rejects optional categories, or customizes toggles.
+3. Preferences are posted to `POST /{prefix}/consent` (CSRF + throttle) and stored in a first-party HttpOnly cookie.
+4. The page dispatches a `vcookiebar:consent` browser event so tracking scripts (for example VoodBuilder monitoring) can start only after analytics consent.
 
-Necessary cookies cannot be turned off.
+Necessary cookies cannot be turned off. The banner does not appear again while the consent cookie is present.

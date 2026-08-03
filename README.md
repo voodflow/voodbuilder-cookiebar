@@ -24,6 +24,16 @@ Register the Filament plugin on your panel:
 
 Omitting `VcookiebarPlugin` hides admin pages. Public consent routes still load while `vcookiebar.enabled` is true.
 
+## Public banner
+
+Auto-injects into known public layouts when `vcookiebar.auto_inject` is true, or include manually:
+
+```blade
+<x-vcookiebar::banner />
+```
+
+Consent is stored via `POST /vcookiebar/consent` (CSRF + throttle). Listeners use the `vcookiebar:consent` browser event — see the developer manual.
+
 ## Documentation
 
 - [User manual](docs/user/index.md)

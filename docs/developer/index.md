@@ -29,6 +29,33 @@ $panel->plugins([
 ]);
 ```
 
+## Public banner
+
+Include the banner manually:
+
+```blade
+<x-vcookiebar::banner />
+```
+
+Or rely on **auto-inject** (`vcookiebar.auto_inject`, default `true`), which pushes the banner onto the `overlays` stack of configured views (VoodBuilder layouts by default). Set `auto_inject` to `false` on standalone hosts that render the component themselves.
+
+The banner:
+
+- Renders only when the package is enabled and no consent cookie is present
+- Posts JSON to the consent endpoint with `X-CSRF-TOKEN`
+- Sets `window.__vcookiebar.preferences` and dispatches `vcookiebar:consent` with `{ preferences }`
+
+Listen for consent without coupling to Filament:
+
+```js
+window.addEventListener('vcookiebar:consent', (event) => {
+    const preferences = event.detail?.preferences;
+    if (preferences?.analytics) {
+        // load analytics
+    }
+});
+```
+
 ## Routes
 
 When `vcookiebar.enabled` is true:
@@ -64,18 +91,21 @@ Security rules:
 
 See `config/vcookiebar.php`. Environment overrides:
 
-- `VOOKIEBAR_ENABLED`
-- `VOOKIEBAR_ROUTE_PREFIX`
-- `VOOKIEBAR_CONSENT_THROTTLE`
-- `VOOKIEBAR_PRIVACY_POLICY_URL`
-- `VOOKIEBAR_CONSENT_COOKIE`
-- `VOOKIEBAR_CONSENT_LIFETIME`
+- `VCOOKIEBAR_ENABLED`
+- `VCOOKIEBAR_ROUTE_PREFIX`
+- `VCOOKIEBAR_CONSENT_THROTTLE`
+- `VCOOKIEBAR_PRIVACY_POLICY_URL`
+- `VCOOKIEBAR_CONSENT_COOKIE`
+- `VCOOKIEBAR_CONSENT_LIFETIME`
+- `VCOOKIEBAR_BANNER_ENABLED`
+- `VCOOKIEBAR_AUTO_INJECT`
 
-Admin settings are layered via `SettingsStore` (application cache) over config defaults.
+Admin settings are layered via `SettingsStore` (application cache) over config defaults and hydrated on boot.
 
 ## Extension points
 
 - `Voodflow\Vcookiebar\Vcookiebar` — enablement and category helpers
+- `Voodflow\Vcookiebar\Support\Banner` — public banner visibility + runtime config
 - `Voodflow\Vcookiebar\Support\ConsentPayload` — normalize / encode / decode
 - `Voodflow\Vcookiebar\Support\SettingsStore` — admin persistence
 - `Voodflow\Vcookiebar\Filament\Pages\VcookiebarSettingsPage` — Filament settings
