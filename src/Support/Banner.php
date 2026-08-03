@@ -80,6 +80,8 @@ final class Banner
             'categories' => $categories,
             'privacyPolicyUrl' => $privacyUrl,
             'cookiePolicyUrl' => $cookiePolicyUrl,
+            'privacyPolicyNewTab' => PolicyLink::opensInNewTab($settings, 'privacy'),
+            'cookiePolicyNewTab' => PolicyLink::opensInNewTab($settings, 'cookie_policy'),
             'appearance' => $appearance,
             'cssVars' => Appearance::cssVariables($appearance),
             'copy' => [

@@ -7,30 +7,17 @@ namespace Voodflow\Vcookiebar\Support;
 /**
  * Resolve privacy / cookie policy links without hard-requiring Voodbuilder.
  *
- * With Voodbuilder: reuses ResolvableLinkForm field keys (page | url | route).
- * Standalone: supports url | path (site-relative).
+ * Link types mirror the Voodbuilder button picker when available:
+ *   url | page | menu
+ * Standalone fallback: url | path
  */
 final class PolicyLink
 {
-    public const TYPES_STANDALONE = ['url', 'path'];
-
     /**
      * @param  array<string, mixed>  $settings
      */
     public static function resolve(array $settings, string $prefix, ?string $legacyUrlKey = null): ?string
     {
-        if (class_exists(\Voodflow\Voodbuilder\Support\ResolvableLinkSupport::class, false)) {
-            $url = \Voodflow\Voodbuilder\Support\ResolvableLinkSupport::resolve(
-                $settings,
-                $prefix,
-                $legacyUrlKey ?? $prefix.'_url',
-            );
-
-            if (filled($url)) {
-                return self::normalizeUrl((string) $url);
-            }
-        }
-
         $type = strtolower(trim((string) ($settings[$prefix.'_link_type'] ?? '')));
         $target = trim((string) ($settings[$prefix.'_link'] ?? ''));
 
@@ -42,7 +29,6 @@ final class PolicyLink
         }
 
         if ($target === '') {
-            // BC: privacy_policy_url flat string
             if ($prefix === 'privacy' && filled($settings['privacy_policy_url'] ?? null)) {
                 return self::normalizeUrl((string) $settings['privacy_policy_url']);
             }
@@ -51,10 +37,18 @@ final class PolicyLink
         }
 
         return match ($type) {
+            'page' => self::resolvePage($target),
+            'menu' => self::resolveMenuItem($target),
             'path' => self::normalizeUrl(str_starts_with($target, '/') ? $target : '/'.$target),
-            'page' => self::normalizeUrl('/'.ltrim($target, '/')),
             default => self::normalizeUrl($target),
         };
+    }
+
+    public static function opensInNewTab(array $settings, string $prefix): bool
+    {
+        $target = (string) ($settings[$prefix.'_open_in'] ?? '');
+
+        return $target === '_blank';
     }
 
     public static function normalizeUrl(string $url): string
@@ -72,8 +66,6 @@ final class PolicyLink
     }
 
     /**
-     * Sanitize link fields from admin form before cache.
-     *
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
@@ -81,32 +73,57 @@ final class PolicyLink
     {
         $type = strtolower(trim((string) ($data[$prefix.'_link_type'] ?? '')));
         $link = trim((string) ($data[$prefix.'_link'] ?? ''));
+        $openIn = (string) ($data[$prefix.'_open_in'] ?? '');
 
-        $allowed = ['url', 'path', 'page', 'route', 'mail'];
+        $allowed = ['url', 'path', 'page', 'menu'];
         if (! in_array($type, $allowed, true)) {
             $type = 'url';
         }
 
-        $out = [
+        if ($openIn !== '_blank') {
+            $openIn = '';
+        }
+
+        return [
             $prefix.'_link_type' => $type,
             $prefix.'_link' => $link !== '' ? mb_substr($link, 0, 2048) : null,
+            $prefix.'_open_in' => $openIn,
         ];
+    }
 
-        // Preserve route params when present (Voodbuilder ResolvableLinkForm).
-        $routeParams = $data[$prefix.'_route_parameters'] ?? null;
-        if (is_array($routeParams)) {
-            $out[$prefix.'_route_parameters'] = $routeParams;
+    private static function resolvePage(string $slug): ?string
+    {
+        $pageClass = 'Voodflow\\Voodbuilder\\Models\\SitePage';
+        if (! class_exists($pageClass)) {
+            return self::normalizeUrl('/'.ltrim($slug, '/'));
         }
 
-        foreach ($data as $key => $value) {
-            if (! is_string($key) || ! str_starts_with($key, $prefix.'_route_param_')) {
-                continue;
-            }
-            if (filled($value)) {
-                $out[$key] = is_string($value) ? mb_substr($value, 0, 191) : $value;
-            }
+        /** @var object|null $page */
+        $page = $pageClass::query()->where('slug', $slug)->first();
+        if ($page === null) {
+            return null;
         }
 
-        return $out;
+        $url = method_exists($page, 'getUrl') ? (string) $page->getUrl() : '';
+
+        return filled($url) && $url !== '#' ? self::normalizeUrl($url) : null;
+    }
+
+    private static function resolveMenuItem(string $id): ?string
+    {
+        $itemClass = 'Voodflow\\Voodbuilder\\Models\\NavigationMenuItem';
+        if (! class_exists($itemClass)) {
+            return null;
+        }
+
+        /** @var object|null $item */
+        $item = $itemClass::query()->find($id);
+        if ($item === null || ! method_exists($item, 'resolveUrl')) {
+            return null;
+        }
+
+        $url = (string) $item->resolveUrl();
+
+        return filled($url) && $url !== '#' ? self::normalizeUrl($url) : null;
     }
 }

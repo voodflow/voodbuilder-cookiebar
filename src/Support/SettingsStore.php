@@ -35,8 +35,10 @@ final class SettingsStore
             'visible' => $visible,
             'privacy_link_type' => 'url',
             'privacy_link' => null,
+            'privacy_open_in' => '',
             'cookie_policy_link_type' => 'url',
             'cookie_policy_link' => null,
+            'cookie_policy_open_in' => '',
             'appearance' => Appearance::defaults(),
         ];
     }

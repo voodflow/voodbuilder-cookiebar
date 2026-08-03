@@ -25,6 +25,13 @@ class VcookiebarServiceProvider extends PackageServiceProvider
             ->hasRoutes('web');
     }
 
+    public function packageRegistered(): void
+    {
+        // Register lang early so Filament pages never see missing-key fallbacks
+        // when a stale published lang file omits new keys.
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vcookiebar');
+    }
+
     public function packageBooted(): void
     {
         SettingsStore::hydrateRuntimeConfig();

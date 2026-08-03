@@ -41,7 +41,11 @@
                 @if ($config['privacyPolicyUrl'] || $config['cookiePolicyUrl'])
                     <p class="vcookiebar__privacy">
                         @if ($config['privacyPolicyUrl'])
-                            <a href="{{ $config['privacyPolicyUrl'] }}" rel="noopener noreferrer" target="_blank">
+                            <a
+                                href="{{ $config['privacyPolicyUrl'] }}"
+                                rel="noopener noreferrer"
+                                @if (! empty($config['privacyPolicyNewTab'])) target="_blank" @endif
+                            >
                                 {{ $config['copy']['privacy'] }}
                             </a>
                         @endif
@@ -49,7 +53,11 @@
                             <span aria-hidden="true"> · </span>
                         @endif
                         @if ($config['cookiePolicyUrl'])
-                            <a href="{{ $config['cookiePolicyUrl'] }}" rel="noopener noreferrer" target="_blank">
+                            <a
+                                href="{{ $config['cookiePolicyUrl'] }}"
+                                rel="noopener noreferrer"
+                                @if (! empty($config['cookiePolicyNewTab'])) target="_blank" @endif
+                            >
                                 {{ $config['copy']['cookiePolicy'] }}
                             </a>
                         @endif
