@@ -218,38 +218,38 @@
     }
     .vcookiebar__reopen {
         pointer-events: auto;
-        position: fixed;
+        position: fixed !important;
         z-index: 2147483001;
-        right: max(var(--vcb-inset), env(safe-area-inset-right, 0px));
-        bottom: max(var(--vcb-inset), env(safe-area-inset-bottom, 0px));
-        width: 2.5rem;
-        height: 2.5rem;
+        inset: auto !important;
+        top: auto !important;
+        left: auto !important;
+        right: max(0.85rem, env(safe-area-inset-right, 0px)) !important;
+        bottom: max(0.85rem, env(safe-area-inset-bottom, 0px)) !important;
+        width: 2rem;
+        height: 2rem;
         border-radius: 999px;
-        border: 1px solid color-mix(in srgb, var(--vcb-btn-primary-bg) 35%, var(--vcb-border));
-        background: var(--vcb-panel-bg);
-        color: var(--vcb-btn-primary-bg);
-        opacity: 0.92;
+        border: 1px solid color-mix(in srgb, var(--vcb-border) 80%, transparent);
+        background: color-mix(in srgb, var(--vcb-panel-bg) 72%, transparent);
+        color: var(--vcb-muted);
+        opacity: 0.38;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.18);
-        transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease;
+        box-shadow: none;
+        backdrop-filter: blur(4px);
+        transition: opacity .18s ease, color .18s ease, border-color .18s ease, background .18s ease, transform .18s ease;
     }
     .vcookiebar__reopen[hidden] {
         display: none !important;
     }
     .vcookiebar__reopen:hover,
     .vcookiebar__reopen:focus-visible {
-        opacity: 1;
-        transform: translateY(-1px);
+        opacity: 0.9;
+        color: var(--vcb-btn-primary-bg);
+        border-color: color-mix(in srgb, var(--vcb-btn-primary-bg) 40%, var(--vcb-border));
+        background: var(--vcb-panel-bg);
+        transform: none;
         outline: none;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
-    }
-    /* Keep reopen findable even when the bar is top / corner-placed */
-    .vcookiebar-shell--bottom-left .vcookiebar__reopen {
-        right: auto;
-        left: max(var(--vcb-inset), env(safe-area-inset-left, 0px));
-        bottom: max(var(--vcb-inset), env(safe-area-inset-bottom, 0px));
     }
 </style>

@@ -10,6 +10,10 @@
     const prefsForm = root ? root.querySelector('[data-vcookiebar-prefs]') : null;
     const statusEl = root ? root.querySelector('[data-vcookiebar-status]') : null;
     const reopenBtn = shell.querySelector('[data-vcookiebar-reopen]');
+    // Detach from transformed ancestors so fixed = viewport bottom-right.
+    if (reopenBtn && reopenBtn.parentElement !== document.body) {
+        document.body.appendChild(reopenBtn);
+    }
     const buttons = root ? root.querySelectorAll('button') : [];
 
     window.__vcookiebar = window.__vcookiebar || {};
