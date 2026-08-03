@@ -16,6 +16,8 @@ return [
         'customize' => 'Personnaliser',
         'save' => 'Enregistrer',
         'privacy' => 'Politique de confidentialité',
+        'cookie_policy' => 'Cookie policy',
+        'reopen' => 'Cookie preferences',
         'error' => 'Impossible d’enregistrer vos préférences. Réessayez.',
         'categories' => [
             'necessary' => [

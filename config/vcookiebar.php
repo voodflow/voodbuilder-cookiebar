@@ -57,10 +57,48 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Privacy policy URL (optional, shown in the bar when set)
+    | Privacy / cookie policy URLs (optional; admin can override via links)
     |--------------------------------------------------------------------------
     */
     'privacy_policy_url' => env('VCOOKIEBAR_PRIVACY_POLICY_URL'),
+    'cookie_policy_url' => env('VCOOKIEBAR_COOKIE_POLICY_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Which categories appear in the customize UI (necessary always shown)
+    |--------------------------------------------------------------------------
+    */
+    'visible' => [
+        'necessary' => true,
+        'preferences' => true,
+        'analytics' => true,
+        'marketing' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Appearance (placement, theme, colors, reopen icon)
+    |--------------------------------------------------------------------------
+    |
+    | theme: voodflow (CSS vars from host theme) | auto (prefers-color-scheme)
+    |        | custom (admin color pickers)
+    |
+    */
+    'appearance' => [
+        'placement' => env('VCOOKIEBAR_PLACEMENT', 'bottom'),
+        'theme' => env('VCOOKIEBAR_THEME', 'auto'),
+        'reopen_icon' => env('VCOOKIEBAR_REOPEN_ICON', true),
+        'colors' => [
+            'panel_bg' => null,
+            'text' => null,
+            'muted' => null,
+            'border' => null,
+            'button_bg' => null,
+            'button_text' => null,
+            'button_primary_bg' => null,
+            'button_primary_text' => null,
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -16,7 +16,9 @@ return [
         'customize' => 'Personalizza',
         'save' => 'Salva preferenze',
         'privacy' => 'Informativa privacy',
+        'cookie_policy' => 'Cookie policy',
         'error' => 'Impossibile salvare le preferenze. Riprova.',
+        'reopen' => 'Preferenze cookie',
         'categories' => [
             'necessary' => [
                 'label' => 'Necessari',
