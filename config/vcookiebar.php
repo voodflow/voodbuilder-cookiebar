@@ -12,21 +12,21 @@ return [
     | runtime and consent endpoint refuse to run.
     |
     */
-    'enabled' => env('VOOKIEBAR_ENABLED', true),
+    'enabled' => env('VCOOKIEBAR_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
     | Public route prefix
     |--------------------------------------------------------------------------
     */
-    'route_prefix' => env('VOOKIEBAR_ROUTE_PREFIX', 'vcookiebar'),
+    'route_prefix' => env('VCOOKIEBAR_ROUTE_PREFIX', 'vcookiebar'),
 
     /*
     |--------------------------------------------------------------------------
     | Consent endpoint throttle (requests per minute)
     |--------------------------------------------------------------------------
     */
-    'consent_throttle' => (int) env('VOOKIEBAR_CONSENT_THROTTLE', 60),
+    'consent_throttle' => (int) env('VCOOKIEBAR_CONSENT_THROTTLE', 60),
 
     /*
     |--------------------------------------------------------------------------
@@ -60,19 +60,19 @@ return [
     | Privacy policy URL (optional, shown in the bar when set)
     |--------------------------------------------------------------------------
     */
-    'privacy_policy_url' => env('VOOKIEBAR_PRIVACY_POLICY_URL'),
+    'privacy_policy_url' => env('VCOOKIEBAR_PRIVACY_POLICY_URL'),
 
     /*
     |--------------------------------------------------------------------------
     | Cookie name used to store the visitor consent snapshot
     |--------------------------------------------------------------------------
     */
-    'consent_cookie' => env('VOOKIEBAR_CONSENT_COOKIE', 'vcookiebar_consent'),
+    'consent_cookie' => env('VCOOKIEBAR_CONSENT_COOKIE', 'vcookiebar_consent'),
 
     /*
     |--------------------------------------------------------------------------
     | Consent cookie lifetime in minutes
     |--------------------------------------------------------------------------
     */
-    'consent_lifetime_minutes' => (int) env('VOOKIEBAR_CONSENT_LIFETIME', 60 * 24 * 365),
+    'consent_lifetime_minutes' => (int) env('VCOOKIEBAR_CONSENT_LIFETIME', 60 * 24 * 365),
 ];
