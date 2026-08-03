@@ -73,12 +73,8 @@
         });
     }
 
-    /**
-     * Activate gated tags:
-     *   <script type="text/plain" data-vcookiebar="analytics" src="...">
-     *   <script type="text/plain" data-vcookiebar-category="marketing">...</script>
-     *   <template data-vcookiebar="analytics">...</template>
-     */
+    // Unlock gated nodes marked with data-vcookiebar / data-vcookiebar-category
+    // (plain script stubs or template wrappers — never put a closing script tag in this file's comments).
     function activateCategory(category) {
         if (! category) return;
 
