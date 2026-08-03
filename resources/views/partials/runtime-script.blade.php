@@ -143,7 +143,10 @@
 
     function hideBanner() {
         if (root) root.hidden = true;
-        if (reopenBtn) reopenBtn.hidden = false;
+        if (reopenBtn) {
+            reopenBtn.hidden = false;
+            reopenBtn.removeAttribute('hidden');
+        }
     }
 
     function showBanner() {
@@ -152,7 +155,10 @@
             if (prefsForm) prefsForm.hidden = false;
             syncFormFromPreferences(window.__vcookiebar.preferences || config.preferences);
         }
-        if (reopenBtn) reopenBtn.hidden = true;
+        if (reopenBtn) {
+            reopenBtn.hidden = true;
+            reopenBtn.setAttribute('hidden', 'hidden');
+        }
     }
 
     function submitPreferences(preferences) {
@@ -204,6 +210,12 @@
     // Existing consent from cookie / host: unlock gated tags immediately.
     if (window.__vcookiebar.preferences) {
         applyPreferences(window.__vcookiebar.preferences);
+    }
+
+    // Keep reopen control visible whenever the dialog is closed.
+    if (root && root.hidden && reopenBtn) {
+        reopenBtn.hidden = false;
+        reopenBtn.removeAttribute('hidden');
     }
 
     window.addEventListener('vcookiebar:consent', function (event) {

@@ -87,7 +87,7 @@ final class Appearance
         return [
             'placement' => $placement,
             'theme' => $theme,
-            'reopen_icon' => (bool) ($raw['reopen_icon'] ?? $defaults['reopen_icon']),
+            'reopen_icon' => filter_var($raw['reopen_icon'] ?? $defaults['reopen_icon'], FILTER_VALIDATE_BOOLEAN),
             'colors' => $colors,
         ];
     }

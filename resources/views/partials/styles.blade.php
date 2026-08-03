@@ -160,7 +160,47 @@
         align-items: flex-start;
         cursor: pointer;
     }
-    .vcookiebar__label input { margin-top: 0.2rem; }
+    .vcookiebar__label input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        box-sizing: border-box;
+        flex: 0 0 auto;
+        width: 1.1rem;
+        height: 1.1rem;
+        margin: 0.2rem 0 0;
+        border: 1.5px solid color-mix(in srgb, var(--vcb-btn-primary-bg) 45%, var(--vcb-border));
+        border-radius: 0.28rem;
+        background: var(--vcb-panel-bg);
+        accent-color: var(--vcb-btn-primary-bg);
+        cursor: pointer;
+        display: grid;
+        place-content: center;
+        transition: background .12s ease, border-color .12s ease;
+    }
+    .vcookiebar__label input[type="checkbox"]::before {
+        content: "";
+        width: 0.62rem;
+        height: 0.62rem;
+        transform: scale(0);
+        transition: transform .12s ease;
+        clip-path: polygon(14% 44%, 0 65%, 38% 100%, 100% 16%, 80% 0%, 34% 62%);
+        background: var(--vcb-btn-primary-text);
+    }
+    .vcookiebar__label input[type="checkbox"]:checked {
+        background: var(--vcb-btn-primary-bg);
+        border-color: var(--vcb-btn-primary-bg);
+    }
+    .vcookiebar__label input[type="checkbox"]:checked::before {
+        transform: scale(1);
+    }
+    .vcookiebar__label input[type="checkbox"]:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+    .vcookiebar__label input[type="checkbox"]:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--vcb-btn-primary-bg) 55%, transparent);
+        outline-offset: 2px;
+    }
     .vcookiebar__label-text {
         display: grid;
         gap: 0.15rem;
@@ -180,28 +220,36 @@
         pointer-events: auto;
         position: fixed;
         z-index: 2147483001;
-        width: 2.25rem;
-        height: 2.25rem;
+        right: max(var(--vcb-inset), env(safe-area-inset-right, 0px));
+        bottom: max(var(--vcb-inset), env(safe-area-inset-bottom, 0px));
+        width: 2.5rem;
+        height: 2.5rem;
         border-radius: 999px;
-        border: 1px solid var(--vcb-border);
-        background: color-mix(in srgb, var(--vcb-panel-bg) 88%, transparent);
-        color: var(--vcb-muted);
-        opacity: 0.55;
+        border: 1px solid color-mix(in srgb, var(--vcb-btn-primary-bg) 35%, var(--vcb-border));
+        background: var(--vcb-panel-bg);
+        color: var(--vcb-btn-primary-bg);
+        opacity: 0.92;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
-        transition: opacity .15s ease, transform .15s ease;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.18);
+        transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease;
+    }
+    .vcookiebar__reopen[hidden] {
+        display: none !important;
     }
     .vcookiebar__reopen:hover,
     .vcookiebar__reopen:focus-visible {
-        opacity: 0.95;
+        opacity: 1;
         transform: translateY(-1px);
         outline: none;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
     }
-    .vcookiebar-shell--bottom .vcookiebar__reopen,
-    .vcookiebar-shell--bottom-right .vcookiebar__reopen { right: var(--vcb-inset); bottom: var(--vcb-inset); }
-    .vcookiebar-shell--bottom-left .vcookiebar__reopen { left: var(--vcb-inset); bottom: var(--vcb-inset); }
-    .vcookiebar-shell--top .vcookiebar__reopen { right: var(--vcb-inset); top: var(--vcb-inset); }
+    /* Keep reopen findable even when the bar is top / corner-placed */
+    .vcookiebar-shell--bottom-left .vcookiebar__reopen {
+        right: auto;
+        left: max(var(--vcb-inset), env(safe-area-inset-left, 0px));
+        bottom: max(var(--vcb-inset), env(safe-area-inset-bottom, 0px));
+    }
 </style>
