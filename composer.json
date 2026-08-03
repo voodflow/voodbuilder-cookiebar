@@ -1,30 +1,36 @@
 {
-    "name": "voodflow/voodbuilder-cookiebar",
-    "description": "VoodBuilder Cookie Bar — FilamentPHP 5 plugin for GDPR cookie consent UI and runtime.",
+    "name": "voodflow/vookiebar",
+    "description": "Cookie consent bar for Laravel and Filament 5 — GDPR preferences UI, runtime, and admin settings.",
     "type": "library",
     "license": "proprietary",
-    "keywords": ["laravel", "filament", "filamentphp", "voodbuilder", "cookiebar", "voodflow"],
+    "keywords": ["laravel", "filament", "filamentphp", "cookie", "consent", "gdpr", "vookiebar", "voodflow"],
     "require": {
         "php": "^8.4",
         "filament/filament": "^5.0",
-        "spatie/laravel-package-tools": "^1.15",
-        "voodflow/voodbuilder": ">=0.0.11"
+        "illuminate/contracts": "^12.0|^13.0",
+        "spatie/laravel-package-tools": "^1.15"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.0|^12.0"
     },
     "autoload": {
         "psr-4": {
-            "Voodflow\\VoodbuilderCookiebar\\": "src/",
-            "Voodflow\\Voodbuilder\\Modules\\Cookiebar\\": "src/Modules/Cookiebar/"
+            "Voodflow\\Vookiebar\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Voodflow\\VoodbuilderCookiebar\\Tests\\": "tests/"
+            "Voodflow\\Vookiebar\\Tests\\": "tests/"
         }
+    },
+    "suggest": {
+        "voodflow/voodbuilder": "Optional page-builder blocks and editor labels for the cookie bar"
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Voodflow\\VoodbuilderCookiebar\\VoodbuilderCookiebarServiceProvider"
+                "Voodflow\\Vookiebar\\VookiebarServiceProvider"
             ]
         }
     },

@@ -1,27 +1,35 @@
-# voodflow/voodbuilder-cookiebar
+# voodflow/vookiebar
 
-FilamentPHP 5 plugin that extends [VoodBuilder](https://github.com/voodflow/voodbuilder) with Cookie Bar.
+Cookie consent bar for Laravel and Filament 5. Independent of any page builder: own routes, own Filament navigation group, own settings.
 
 ## Install
 
 ```bash
-composer require voodflow/voodbuilder-cookiebar
+composer require voodflow/vookiebar
 ```
 
-Register the Filament plugin next to VoodBuilder:
+Publish config (optional):
+
+```bash
+php artisan vendor:publish --tag=vookiebar-config
+```
+
+Register the Filament plugin on your panel:
 
 ```php
 ->plugins([
-    \Voodflow\Voodbuilder\VoodbuilderPlugin::make(),
-    \Voodflow\VoodbuilderCookiebar\VoodbuilderCookiebarPlugin::make(),
+    \Voodflow\Vookiebar\VookiebarPlugin::make(),
 ])
 ```
 
-Omitting `VoodbuilderCookiebarPlugin` from the panel disables Cookie Bar admin and runtime features, even while the Composer package remains installed.
+Omitting `VookiebarPlugin` hides admin pages. Public consent routes still load while `vookiebar.enabled` is true.
 
-Optional config (`config/voodbuilder-cookiebar.php`):
+## Documentation
 
-- `enabled` — master switch (default `true`)
-- `auto_register_module` — register the module without the Filament plugin (default `false`, for Testbench/headless)
+- [User manual](docs/user/index.md)
+- [Developer manual](docs/developer/index.md)
+- [Docs index](docs/README.md)
 
-Scaffolded from [filamentphp/plugin-skeleton](https://github.com/filamentphp/plugin-skeleton) `5.x`.
+## License
+
+Proprietary — production use requires a paid Voodflow license. See [LICENSE](LICENSE).
