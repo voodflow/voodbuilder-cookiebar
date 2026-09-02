@@ -1,0 +1,14 @@
+---
+description: Vcookiebar security do/don't for consent and admin
+globs: packages/voodflow/vcookiebar/**/*.{php,blade.php,js}
+alwaysApply: false
+---
+
+# Security
+
+- **Do** keep consent under `web` + throttle; validate category keys and booleans.
+- **Do** force `necessary` true; HttpOnly consent cookie.
+- **Don't** accept arbitrary preference keys from the client.
+- **Don't** disable CSRF for the consent endpoint.
+- Gate scripts with `data-vcookiebar` / `<x-vcookiebar::gated>`; never unlock all trackers by default.
+- Companion analytics gating is optional — never hard-require Voodbuilder.

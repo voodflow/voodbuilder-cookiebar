@@ -1,0 +1,14 @@
+---
+description: Vcookiebar package conventions and namespaces
+globs: packages/voodflow/vcookiebar/**/*
+alwaysApply: false
+---
+
+# Vcookiebar conventions
+
+- Namespace: `Voodflow\Vcookiebar`. Composer: `voodflow/vcookiebar`.
+- Keep the package **builder-agnostic**: own routes, config, Filament nav group.
+- Prefer `Vcookiebar::`, `Support\Banner`, `ConsentPayload`, `SettingsStore` over ad-hoc helpers.
+- Config key prefix: `vcookiebar.*`. Env: `VCOOKIEBAR_*`.
+- Views: `vcookiebar::`. Do not nest settings under another product’s UI.
+- Docs live in `docs/` (sales, user, developer, RELEASE_CHECKLIST).
