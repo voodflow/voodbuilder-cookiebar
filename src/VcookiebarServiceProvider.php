@@ -75,6 +75,10 @@ class VcookiebarServiceProvider extends PackageServiceProvider
                 return;
             }
 
+            if (Vcookiebar::shouldStandDownForEditor()) {
+                return;
+            }
+
             $pushed = true;
 
             View::startPush('overlays');

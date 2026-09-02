@@ -13,6 +13,14 @@ namespace Voodflow\Vcookiebar;
  */
 final class Vcookiebar
 {
+    /**
+     * Request attribute a page builder sets when it has taken over the viewport.
+     *
+     * Kept as a literal string so this package keeps booting with no page builder
+     * installed — see the `package_boots_without_page_builder_classes` test.
+     */
+    private const EDITOR_CONTEXT_ATTRIBUTE = 'voodbuilder.editor_active';
+
     private static bool $activated = false;
 
     public static function reset(): void
@@ -33,6 +41,20 @@ final class Vcookiebar
     public static function isEnabled(): bool
     {
         return (bool) config('vcookiebar.enabled', true);
+    }
+
+    /**
+     * Should the banner stay out of this response?
+     *
+     * A visual editor absorbs host page markup into its authoring canvas, so an injected
+     * banner stops being an overlay and becomes editable content pinned over the author's
+     * footer. The editor announces itself per request; we never inspect the `?edit=1`
+     * query flag ourselves, because any visitor can append it and a banner that vanishes
+     * for visitors is a consent failure rather than a cosmetic one.
+     */
+    public static function shouldStandDownForEditor(): bool
+    {
+        return request()->attributes->getBoolean(self::EDITOR_CONTEXT_ATTRIBUTE);
     }
 
     /**
