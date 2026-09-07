@@ -7,7 +7,7 @@ namespace Voodflow\Vcookiebar\Support;
 use Voodflow\Vcookiebar\Vcookiebar;
 
 /**
- * Public consent banner helpers (agnostic of any page builder).
+ * Public consent banner + shared runtime helpers (agnostic of any page builder).
  */
 final class Banner
 {
@@ -21,29 +21,39 @@ final class Banner
             return false;
         }
 
-        $cookieName = (string) config('vcookiebar.consent_cookie', 'vcookiebar_consent');
-
-        return ConsentPayload::decode(request()->cookie($cookieName)) === null;
+        return self::currentPreferences() === null;
     }
 
     /**
-     * Payload embedded into the banner for the public runtime script.
+     * Runtime shell (script gate + reopen) whenever the package is enabled.
+     */
+    public static function shouldRenderRuntime(): bool
+    {
+        return Vcookiebar::isEnabled();
+    }
+
+    /**
+     * @return array<string, bool>|null
+     */
+    public static function currentPreferences(): ?array
+    {
+        $cookieName = (string) config('vcookiebar.consent_cookie', 'vcookiebar_consent');
+
+        return ConsentPayload::decode(request()->cookie($cookieName));
+    }
+
+    /**
+     * Payload embedded into the banner / runtime for the public scripts.
      *
-     * @return array{
-     *     endpoint: string,
-     *     csrf: string,
-     *     preferences: array<string, bool>,
-     *     categories: list<array{key: string, label: string, description: string, locked: bool}>,
-     *     privacyPolicyUrl: string|null,
-     *     copy: array<string, string>
-     * }
+     * @return array<string, mixed>
      */
     public static function runtimeConfig(): array
     {
         $preferences = Vcookiebar::defaultPreferences();
+        $visibleKeys = SettingsStore::visibleCategories();
         $categories = [];
 
-        foreach (Vcookiebar::allowedCategories() as $key) {
+        foreach ($visibleKeys as $key) {
             $categories[] = [
                 'key' => $key,
                 'label' => (string) __('vcookiebar::runtime.banner.categories.'.$key.'.label'),
@@ -52,14 +62,28 @@ final class Banner
             ];
         }
 
+        $appearance = Appearance::normalize(
+            is_array(config('vcookiebar.appearance')) ? config('vcookiebar.appearance') : [],
+        );
+
+        $settings = SettingsStore::all();
+        $privacyUrl = PolicyLink::resolve($settings, 'privacy', 'privacy_policy_url')
+            ?? (filled(config('vcookiebar.privacy_policy_url')) ? (string) config('vcookiebar.privacy_policy_url') : null);
+        $cookiePolicyUrl = PolicyLink::resolve($settings, 'cookie_policy')
+            ?? (filled(config('vcookiebar.cookie_policy_url')) ? (string) config('vcookiebar.cookie_policy_url') : null);
+
         return [
             'endpoint' => route('vcookiebar.consent.store'),
             'csrf' => csrf_token(),
             'preferences' => $preferences,
+            'savedPreferences' => self::currentPreferences(),
             'categories' => $categories,
-            'privacyPolicyUrl' => filled(config('vcookiebar.privacy_policy_url'))
-                ? (string) config('vcookiebar.privacy_policy_url')
-                : null,
+            'privacyPolicyUrl' => $privacyUrl,
+            'cookiePolicyUrl' => $cookiePolicyUrl,
+            'privacyPolicyNewTab' => PolicyLink::opensInNewTab($settings, 'privacy'),
+            'cookiePolicyNewTab' => PolicyLink::opensInNewTab($settings, 'cookie_policy'),
+            'appearance' => $appearance,
+            'cssVars' => Appearance::cssVariables($appearance),
             'copy' => [
                 'title' => (string) __('vcookiebar::runtime.banner.title'),
                 'message' => (string) __('vcookiebar::runtime.banner.message'),
@@ -68,7 +92,9 @@ final class Banner
                 'customize' => (string) __('vcookiebar::runtime.banner.customize'),
                 'save' => (string) __('vcookiebar::runtime.banner.save'),
                 'privacy' => (string) __('vcookiebar::runtime.banner.privacy'),
+                'cookiePolicy' => (string) __('vcookiebar::runtime.banner.cookie_policy'),
                 'error' => (string) __('vcookiebar::runtime.banner.error'),
+                'reopen' => (string) __('vcookiebar::runtime.banner.reopen'),
             ],
         ];
     }

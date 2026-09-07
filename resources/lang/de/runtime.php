@@ -16,6 +16,8 @@ return [
         'customize' => 'Anpassen',
         'save' => 'Einstellungen speichern',
         'privacy' => 'Datenschutzerklärung',
+        'cookie_policy' => 'Cookie policy',
+        'reopen' => 'Cookie preferences',
         'error' => 'Einstellungen konnten nicht gespeichert werden. Bitte erneut versuchen.',
         'categories' => [
             'necessary' => [

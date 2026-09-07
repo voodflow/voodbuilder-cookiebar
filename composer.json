@@ -1,9 +1,18 @@
 {
     "name": "voodflow/vcookiebar",
-    "description": "Cookie consent bar for Laravel and Filament 5 — GDPR preferences UI, runtime, and admin settings.",
+    "description": "Cookie consent bar for Laravel and Filament 5 \u2014 GDPR preferences UI, runtime, and admin settings.",
     "type": "library",
-    "license": "proprietary",
-    "keywords": ["laravel", "filament", "filamentphp", "cookie", "consent", "gdpr", "vcookiebar", "voodflow"],
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "filament",
+        "filamentphp",
+        "cookie",
+        "consent",
+        "gdpr",
+        "vcookiebar",
+        "voodflow"
+    ],
     "require": {
         "php": "^8.4",
         "filament/filament": "^5.0",
@@ -35,5 +44,6 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "version": "0.1.1"
 }

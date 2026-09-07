@@ -16,7 +16,9 @@ return [
         'customize' => 'Customize',
         'save' => 'Save preferences',
         'privacy' => 'Privacy policy',
+        'cookie_policy' => 'Cookie policy',
         'error' => 'Could not save your preferences. Please try again.',
+        'reopen' => 'Cookie preferences',
         'categories' => [
             'necessary' => [
                 'label' => 'Necessary',

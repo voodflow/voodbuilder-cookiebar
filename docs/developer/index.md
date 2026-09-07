@@ -39,11 +39,34 @@ Include the banner manually:
 
 Or rely on **auto-inject** (`vcookiebar.auto_inject`, default `true`), which pushes the banner onto the `overlays` stack of configured views (VoodBuilder layouts by default). Set `auto_inject` to `false` on standalone hosts that render the component themselves.
 
-The banner:
+The banner shell (`<x-vcookiebar::banner />`):
 
-- Renders only when the package is enabled and no consent cookie is present
+- Always mounts when the package is enabled (script gate + optional reopen icon)
+- Shows the consent dialog only when no valid consent cookie is present
 - Posts JSON to the consent endpoint with `X-CSRF-TOKEN`
 - Sets `window.__vcookiebar.preferences` and dispatches `vcookiebar:consent` with `{ preferences }`
+- Unlocks gated tags marked with `data-vcookiebar="analytics"` (or `data-vcookiebar-category`)
+
+### Gating scripts (standalone hosts)
+
+Preferred pattern — keep scripts inert until consent:
+
+```html
+<script type="text/plain" data-vcookiebar="analytics" src="https://example.com/analytics.js"></script>
+<script type="text/plain" data-vcookiebar="marketing">
+  // inline marketing pixel
+</script>
+```
+
+Or wrap arbitrary markup:
+
+```blade
+<x-vcookiebar::gated category="analytics">
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+</x-vcookiebar::gated>
+```
+
+With **Voodbuilder**, Settings → Analytics scripts are gated automatically on the `analytics` category (no manual tags required).
 
 Listen for consent without coupling to Filament:
 
@@ -55,6 +78,8 @@ window.addEventListener('vcookiebar:consent', (event) => {
     }
 });
 ```
+
+Helpers: `window.__vcookiebar.has('analytics')`, `window.__vcookiebar.open()`.
 
 ## Routes
 

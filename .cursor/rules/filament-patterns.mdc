@@ -1,0 +1,14 @@
+---
+description: Filament 5 patterns for Vcookiebar admin
+globs: packages/voodflow/vcookiebar/src/Filament/**/*
+alwaysApply: false
+---
+
+# Filament 5 / Livewire 4
+
+- Register UI only via `VcookiebarPlugin::make()` on the panel.
+- Forms: `Filament\Forms\Components\*`. Layout: `Filament\Schemas\Components\*`.
+- Actions: `Filament\Actions\*` — never `Filament\Tables\Actions\*`.
+- Icons: `Filament\Support\Icons\Heroicon`.
+- Settings page owns appearance/policy fields; soft-use Voodbuilder link helpers only when classes exist.
+- Do not add resources unless product scope expands beyond settings.

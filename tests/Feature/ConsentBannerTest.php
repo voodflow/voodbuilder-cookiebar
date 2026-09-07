@@ -14,14 +14,16 @@ class ConsentBannerTest extends TestCase
     {
         $html = view('vcookiebar::components.banner')->render();
 
+        $this->assertStringContainsString('data-vcookiebar-shell', $html);
         $this->assertStringContainsString('data-vcookiebar', $html);
         $this->assertStringContainsString('vcookiebar:consent', $html);
         $this->assertStringContainsString('X-CSRF-TOKEN', $html);
         $this->assertStringContainsString('"endpoint"', $html);
         $this->assertTrue(Banner::shouldRender());
+        $this->assertTrue(Banner::shouldRenderRuntime());
     }
 
-    public function test_banner_is_hidden_when_consent_cookie_exists(): void
+    public function test_shell_stays_for_script_gate_when_consent_cookie_exists(): void
     {
         $payload = ConsentPayload::encode([
             'necessary' => true,
@@ -36,7 +38,13 @@ class ConsentBannerTest extends TestCase
         request()->cookies->set('vcookiebar_consent', $payload);
 
         $this->assertFalse(Banner::shouldRender());
-        $this->assertStringNotContainsString('data-vcookiebar', view('vcookiebar::components.banner')->render());
+        $this->assertTrue(Banner::shouldRenderRuntime());
+
+        $html = view('vcookiebar::components.banner')->render();
+        $this->assertStringContainsString('data-vcookiebar-shell', $html);
+        $this->assertStringContainsString('data-vcookiebar-reopen', $html);
+        // Root dialog is present but hidden until reopen.
+        $this->assertMatchesRegularExpression('/id="vcookiebar-root"[^>]*\bhidden\b/', $html);
     }
 
     public function test_banner_is_hidden_when_package_disabled(): void
@@ -44,6 +52,7 @@ class ConsentBannerTest extends TestCase
         config(['vcookiebar.enabled' => false]);
 
         $this->assertFalse(Banner::shouldRender());
+        $this->assertFalse(Banner::shouldRenderRuntime());
         $this->assertStringNotContainsString('data-vcookiebar', view('vcookiebar::components.banner')->render());
     }
 
@@ -56,5 +65,23 @@ class ConsentBannerTest extends TestCase
         $this->assertTrue($config['preferences']['necessary']);
         $this->assertContains('necessary', array_column($config['categories'], 'key'));
         $this->assertArrayHasKey('acceptAll', $config['copy']);
+        $this->assertArrayHasKey('appearance', $config);
+        $this->assertArrayHasKey('cookiePolicyUrl', $config);
+    }
+
+    public function test_hidden_categories_are_omitted_from_customize_list(): void
+    {
+        config([
+            'vcookiebar.visible' => [
+                'necessary' => true,
+                'preferences' => false,
+                'analytics' => true,
+                'marketing' => false,
+            ],
+        ]);
+
+        $keys = array_column(Banner::runtimeConfig()['categories'], 'key');
+
+        $this->assertSame(['necessary', 'analytics'], $keys);
     }
 }
