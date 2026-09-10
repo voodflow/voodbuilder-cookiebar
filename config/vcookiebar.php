@@ -143,5 +143,8 @@ return [
         'voodbuilder::layouts.home',
         'voodbuilder::layouts.doc',
         'voodbuilder::layouts.full-width',
+        'vdocs::layouts.voodbuilder',
+        'vtuts::layouts.voodbuilder',
+        'vtuts::layouts.voodbuilder-page',
     ],
 ];
