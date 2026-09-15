@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Voodflow\Vcookiebar\Tests\Feature;
 
 use Voodflow\Vcookiebar\Support\Appearance;
+use Voodflow\Vcookiebar\Support\Banner;
 use Voodflow\Vcookiebar\Support\PolicyLink;
 use Voodflow\Vcookiebar\Support\SettingsStore;
 use Voodflow\Vcookiebar\Tests\TestCase;
@@ -23,6 +24,17 @@ class AppearanceAndPolicyLinkTest extends TestCase
         $this->assertSame('custom', $normalized['theme']);
         $this->assertSame('#aabbcc', $normalized['colors']['panel_bg']);
         $this->assertNull($normalized['colors']['button_primary_bg']);
+    }
+
+    public function test_appearance_theme_aliases_legacy_ids(): void
+    {
+        $this->assertSame(Appearance::THEME_BASE, Appearance::normalizeTheme('auto'));
+        $this->assertSame(Appearance::THEME_VOODBUILDER, Appearance::normalizeTheme('voodflow'));
+        $this->assertSame(Appearance::THEME_BASE, Appearance::normalizeTheme('nope'));
+        $this->assertSame(
+            Appearance::THEME_BASE,
+            Appearance::normalize(['theme' => 'auto'])['theme'],
+        );
     }
 
     public function test_policy_link_resolves_path_and_legacy_url(): void
@@ -50,9 +62,9 @@ class AppearanceAndPolicyLinkTest extends TestCase
             'consent_cookie' => 'vcookiebar_consent',
             'defaults' => [
                 'necessary' => true,
-                'preferences' => false,
-                'analytics' => false,
-                'marketing' => false,
+                'preferences' => true,
+                'analytics' => true,
+                'marketing' => true,
             ],
             'visible' => [
                 'necessary' => true,
@@ -60,10 +72,6 @@ class AppearanceAndPolicyLinkTest extends TestCase
                 'analytics' => false,
                 'marketing' => true,
             ],
-            'privacy_link_type' => 'url',
-            'privacy_link' => 'https://example.test/privacy',
-            'cookie_policy_link_type' => 'path',
-            'cookie_policy_link' => '/cookies',
             'appearance' => [
                 'placement' => 'bottom-right',
                 'theme' => 'custom',
@@ -72,6 +80,18 @@ class AppearanceAndPolicyLinkTest extends TestCase
                     'button_primary_bg' => '#0ea5e9',
                 ],
             ],
+            'copy' => [
+                'en' => [
+                    'title' => 'Custom EN title',
+                    'message' => '',
+                    'privacy_link_type' => 'url',
+                    'privacy_link' => 'https://example.test/privacy',
+                    'cookie_policy_link_type' => 'path',
+                    'cookie_policy_link' => '/cookies',
+                ],
+            ],
+            'copy_locales' => ['en'],
+            'copy_primary_locale' => 'en',
         ]);
 
         $this->assertSame('https://example.test/privacy', config('vcookiebar.privacy_policy_url'));
@@ -81,6 +101,25 @@ class AppearanceAndPolicyLinkTest extends TestCase
         $this->assertSame('bottom-right', config('vcookiebar.appearance.placement'));
         $this->assertSame('#0ea5e9', config('vcookiebar.appearance.colors.button_primary_bg'));
 
+        // GDPR: optional defaults cannot stay pre-ticked from admin input.
+        $this->assertFalse(config('vcookiebar.defaults.analytics'));
+        $this->assertFalse(config('vcookiebar.defaults.marketing'));
+        $this->assertTrue(config('vcookiebar.defaults.necessary'));
+
+        app()->setLocale('en');
+        $copy = SettingsStore::resolveCopy(SettingsStore::all());
+        $this->assertSame('Custom EN title', $copy['title']);
+        $this->assertNotSame('', $copy['message']);
+
         SettingsStore::forget();
+    }
+
+    public function test_runtime_config_exposes_cleanup_cookies(): void
+    {
+        $config = Banner::runtimeConfig();
+
+        $this->assertArrayHasKey('cleanupCookies', $config);
+        $this->assertArrayHasKey('analytics', $config['cleanupCookies']);
+        $this->assertContains('_ga', $config['cleanupCookies']['analytics']);
     }
 }

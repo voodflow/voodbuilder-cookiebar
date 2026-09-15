@@ -16,7 +16,7 @@ Open **Vcookiebar → Settings**:
 | Categories to show | Which optional categories appear under Customize (Necessary always shown) |
 | Default preferences | Starting state before the visitor chooses (Necessary stays on) |
 | Placement | Bottom, bottom-right / bottom-left (floating inset), or top |
-| Theme | Voodflow theme (follows site light/dark), system auto, or custom colors |
+| Theme | Base (built-in light/dark), VoodBuilder (page theme, if installed), or custom colors |
 | Reopen icon | Subtle control after consent to change preferences |
 
 ## Visitor flow

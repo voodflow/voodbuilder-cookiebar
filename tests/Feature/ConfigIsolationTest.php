@@ -46,8 +46,9 @@ class ConfigIsolationTest extends TestCase
 
         $defaults = config('vcookiebar.defaults');
         $this->assertTrue($defaults['necessary']);
-        $this->assertTrue($defaults['preferences']);
-        $this->assertTrue($defaults['analytics']);
+        // GDPR opt-in: optional defaults are forced off even if the admin payload tried to enable them.
+        $this->assertFalse($defaults['preferences']);
+        $this->assertFalse($defaults['analytics']);
         $this->assertFalse($defaults['marketing']);
         $this->assertArrayNotHasKey('evil', $defaults);
     }

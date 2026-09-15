@@ -47,12 +47,43 @@ return [
     |--------------------------------------------------------------------------
     | Default category enabled state
     |--------------------------------------------------------------------------
+    |
+    | Optional categories MUST stay false for GDPR/ePrivacy opt-in (no
+    | pre-ticked boxes). Admin settings force the same rule on save.
+    |
     */
     'defaults' => [
         'necessary' => true,
         'preferences' => false,
         'analytics' => false,
         'marketing' => false,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cookie names to delete when a category is declined
+    |--------------------------------------------------------------------------
+    |
+    | Client-readable cookies only (HttpOnly cookies cannot be cleared from JS).
+    | Use a trailing * for prefix match (e.g. "_ga*"). Empty lists are fine —
+    | script gating is the primary control; cleanup is best-effort hygiene.
+    |
+    */
+    'cleanup_cookies' => [
+        'preferences' => [],
+        'analytics' => [
+            '_ga',
+            '_ga_*',
+            '_gid',
+            '_gat',
+            '_gat_*',
+            '_gcl_au',
+            '_gac_*',
+        ],
+        'marketing' => [
+            '_fbp',
+            '_fbc',
+        ],
     ],
 
     /*
@@ -80,13 +111,14 @@ return [
     | Appearance (placement, theme, colors, reopen icon)
     |--------------------------------------------------------------------------
     |
-    | theme: voodflow (CSS vars from host theme) | auto (prefers-color-scheme)
+    | theme: base (packaged light/dark) | voodbuilder (page CSS tokens)
+    |        | custom (color pickers). Legacy: auto→base, voodflow→voodbuilder.
     |        | custom (admin color pickers)
     |
     */
     'appearance' => [
         'placement' => env('VCOOKIEBAR_PLACEMENT', 'bottom'),
-        'theme' => env('VCOOKIEBAR_THEME', 'auto'),
+        'theme' => env('VCOOKIEBAR_THEME', 'base'),
         'reopen_icon' => env('VCOOKIEBAR_REOPEN_ICON', true),
         'colors' => [
             'panel_bg' => null,
@@ -113,6 +145,28 @@ return [
     |--------------------------------------------------------------------------
     */
     'consent_lifetime_minutes' => (int) env('VCOOKIEBAR_CONSENT_LIFETIME', 60 * 24 * 365),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Locales for Filament banner text translations
+    |--------------------------------------------------------------------------
+    |
+    | null / empty = discover from the host site only (no plugins):
+    |   app.locales → cosmolab.locales → APP_LOCALES → app.locale
+    | Set an explicit list only to force a subset.
+    |
+    */
+    'content_locales' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Optional comma-separated site locales from .env (APP_LOCALES=en,it)
+    |--------------------------------------------------------------------------
+    |
+    | Used when app.locales / cosmolab.locales are empty.
+    |
+    */
+    'site_locales' => env('APP_LOCALES'),
 
     /*
     |--------------------------------------------------------------------------

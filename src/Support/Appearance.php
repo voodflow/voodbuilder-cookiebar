@@ -16,11 +16,19 @@ final class Appearance
         'top',
     ];
 
-    public const THEME_VOODFLOW = 'voodflow';
+    /** Packaged light/dark presets (prefers-color-scheme + html.dark). */
+    public const THEME_BASE = 'base';
+
+    /** Inherit VoodBuilder page theme tokens (--color-vp-*). */
+    public const THEME_VOODBUILDER = 'voodbuilder';
 
     public const THEME_CUSTOM = 'custom';
 
+    /** @deprecated Use THEME_BASE */
     public const THEME_AUTO = 'auto';
+
+    /** @deprecated Use THEME_VOODBUILDER */
+    public const THEME_VOODFLOW = 'voodflow';
 
     /**
      * @return array{
@@ -32,16 +40,9 @@ final class Appearance
      */
     public static function defaults(): array
     {
-        // Do not autoload optional Voodbuilder classes during package boot
-        // (keeps the package isolatable in its own testbench).
-        $theme = (
-            class_exists(\Voodflow\Voodbuilder\Voodbuilder::class, false)
-            || class_exists(\Voodflow\Voodbuilder\Support\ThemePalette::class, false)
-        ) ? self::THEME_VOODFLOW : self::THEME_AUTO;
-
         return [
             'placement' => 'bottom',
-            'theme' => $theme,
+            'theme' => self::hasVoodbuilderLoaded() ? self::THEME_VOODBUILDER : self::THEME_BASE,
             'reopen_icon' => true,
             'colors' => [
                 'panel_bg' => null,
@@ -54,6 +55,24 @@ final class Appearance
                 'button_primary_text' => null,
             ],
         ];
+    }
+
+    /**
+     * True when VoodBuilder is available (autoload allowed — Filament / runtime).
+     */
+    public static function hasVoodbuilder(): bool
+    {
+        return class_exists(\Voodflow\Voodbuilder\Voodbuilder::class)
+            || class_exists(\Voodflow\Voodbuilder\Support\ThemePalette::class);
+    }
+
+    /**
+     * Soft detection that does not autoload (safe during package boot / testbench).
+     */
+    public static function hasVoodbuilderLoaded(): bool
+    {
+        return class_exists(\Voodflow\Voodbuilder\Voodbuilder::class, false)
+            || class_exists(\Voodflow\Voodbuilder\Support\ThemePalette::class, false);
     }
 
     /**
@@ -73,10 +92,7 @@ final class Appearance
             $placement = $defaults['placement'];
         }
 
-        $theme = strtolower(trim((string) ($raw['theme'] ?? $defaults['theme'])));
-        if (! in_array($theme, [self::THEME_VOODFLOW, self::THEME_CUSTOM, self::THEME_AUTO], true)) {
-            $theme = $defaults['theme'];
-        }
+        $theme = self::normalizeTheme((string) ($raw['theme'] ?? $defaults['theme']));
 
         $colorsIn = is_array($raw['colors'] ?? null) ? $raw['colors'] : [];
         $colors = [];
@@ -90,6 +106,26 @@ final class Appearance
             'reopen_icon' => filter_var($raw['reopen_icon'] ?? $defaults['reopen_icon'], FILTER_VALIDATE_BOOLEAN),
             'colors' => $colors,
         ];
+    }
+
+    /**
+     * Map legacy theme ids and fall back when VoodBuilder is missing.
+     */
+    public static function normalizeTheme(string $theme): string
+    {
+        $theme = strtolower(trim($theme));
+
+        $theme = match ($theme) {
+            self::THEME_AUTO, 'system' => self::THEME_BASE,
+            self::THEME_VOODFLOW => self::THEME_VOODBUILDER,
+            default => $theme,
+        };
+
+        if (! in_array($theme, [self::THEME_BASE, self::THEME_VOODBUILDER, self::THEME_CUSTOM], true)) {
+            return self::THEME_BASE;
+        }
+
+        return $theme;
     }
 
     public static function sanitizeHex(mixed $raw): ?string

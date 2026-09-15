@@ -14,6 +14,7 @@ return [
         'accept_all' => 'Accetta tutti',
         'reject_optional' => 'Rifiuta opzionali',
         'customize' => 'Personalizza',
+        'hide_details' => 'Nascondi',
         'save' => 'Salva preferenze',
         'privacy' => 'Informativa privacy',
         'cookie_policy' => 'Cookie policy',

@@ -2,28 +2,39 @@
 
 ## Missing for release
 
-- [ ] Packagist / private Composer registry listing + version tag
-- [ ] Public changelog entry for the shipping version
-- [ ] Confirm LICENSE / commercial terms on the storefront
+- [ ] Packagist listing + version tag (`0.2.0`)
 - [ ] Smoke test Filament settings + public banner on a clean Laravel 13 + Filament 5 host
+- [ ] Confirm Plumb scan after first Packagist publish (expect 100 with SECURITY + Dependabot cooldown + lean dist)
 
-## Nice-to-have
+## Plumb readiness (local)
 
-- [ ] Optional Voodbuilder companion blocks package (suggest only today)
-- [ ] Multilingual admin strings beyond host locale
-- [ ] Consent audit log / export for enterprise buyers
+Mirror of [voodflow/vmedia](https://github.com/voodflow) packaging:
+
+| Check | Status |
+|-------|--------|
+| `SECURITY.md` | Present |
+| `.github/dependabot.yml` + `cooldown` (≥3 days) | Present |
+| `composer.lock` excluded from dist (`.gitattributes`) | Present |
+| Dist lean (tests / `.github` / `.cursor` / docs / phpunit export-ignore) | Present |
+| No unpinned GitHub Actions workflows | N/A (no workflows) |
+| PHP `^8.4` (includes current 8.5) | Present |
+| Laravel via `illuminate/contracts` `^12\|^13` | Present |
+| MIT `LICENSE` | Present |
+
+Verify archive locally:
+
+```bash
+git archive --format=tar HEAD | tar -t | head -100
+# must NOT list tests/, .github/, composer.lock, .cursor/, phpunit.xml.dist
+```
 
 ## Test status
 
-**Result (2026-08-25, Docker PHP 8.4 / package phpunit|pest):** PASS
+Run inside the PHP 8.4 app container:
 
-24 tests, 83 assertions.
-
-## Code quality vs Filament 5
-
-- Uses Filament 5 plugin + Pages API; settings page is package-owned
-- Livewire 4 / Laravel 13 contracts in `composer.json`
-- No legacy `Filament\Tables\Actions` namespaces observed in core paths
+```bash
+cd packages/voodflow/vcookiebar && ./vendor/bin/phpunit
+```
 
 ## Security & vulnerability review
 
@@ -32,9 +43,6 @@
 | Authz | Admin via Filament panel auth; no public admin routes | OK |
 | Consent POST | CSRF (`web`) + throttle; category allow-list; `necessary` forced true | OK |
 | Cookie | HttpOnly, SameSite=Lax, Secure on HTTPS | OK |
-| XSS | Admin HtmlString for static help copy; public banner uses escaped Blade | OK |
-| SSRF / uploads / SQLi | N/A (no remote fetch, uploads, or raw SQL) | OK |
+| Withdrawal | Reload after save + cleanup patterns for declined categories | OK |
+| XSS | Public banner uses escaped Blade | OK |
 | Secrets | None stored by package | OK |
-| Mass assignment | Settings via dedicated store, not Eloquent mass-assign of request | OK |
-
-**Critical fixes applied this audit:** none required.

@@ -65,6 +65,7 @@ class ConsentBannerTest extends TestCase
         $this->assertTrue($config['preferences']['necessary']);
         $this->assertContains('necessary', array_column($config['categories'], 'key'));
         $this->assertArrayHasKey('acceptAll', $config['copy']);
+        $this->assertArrayHasKey('hideDetails', $config['copy']);
         $this->assertArrayHasKey('appearance', $config);
         $this->assertArrayHasKey('cookiePolicyUrl', $config);
     }

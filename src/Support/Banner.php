@@ -67,10 +67,28 @@ final class Banner
         );
 
         $settings = SettingsStore::all();
-        $privacyUrl = PolicyLink::resolve($settings, 'privacy', 'privacy_policy_url')
+        $privacySettings = SettingsStore::resolvePolicySettings($settings);
+        $privacyUrl = PolicyLink::resolve($privacySettings, 'privacy', 'privacy_policy_url')
             ?? (filled(config('vcookiebar.privacy_policy_url')) ? (string) config('vcookiebar.privacy_policy_url') : null);
-        $cookiePolicyUrl = PolicyLink::resolve($settings, 'cookie_policy')
+        $cookiePolicyUrl = PolicyLink::resolve($privacySettings, 'cookie_policy')
             ?? (filled(config('vcookiebar.cookie_policy_url')) ? (string) config('vcookiebar.cookie_policy_url') : null);
+
+        /** @var array<string, list<string>|mixed> $cleanup */
+        $cleanup = config('vcookiebar.cleanup_cookies', []);
+        $cleanupCookies = [];
+
+        if (is_array($cleanup)) {
+            foreach ($cleanup as $category => $names) {
+                if (! is_string($category) || ! is_array($names)) {
+                    continue;
+                }
+
+                $cleanupCookies[$category] = array_values(array_filter(
+                    $names,
+                    static fn (mixed $name): bool => is_string($name) && $name !== '',
+                ));
+            }
+        }
 
         return [
             'endpoint' => route('vcookiebar.consent.store'),
@@ -78,24 +96,14 @@ final class Banner
             'preferences' => $preferences,
             'savedPreferences' => self::currentPreferences(),
             'categories' => $categories,
+            'cleanupCookies' => $cleanupCookies,
             'privacyPolicyUrl' => $privacyUrl,
             'cookiePolicyUrl' => $cookiePolicyUrl,
-            'privacyPolicyNewTab' => PolicyLink::opensInNewTab($settings, 'privacy'),
-            'cookiePolicyNewTab' => PolicyLink::opensInNewTab($settings, 'cookie_policy'),
+            'privacyPolicyNewTab' => PolicyLink::opensInNewTab($privacySettings, 'privacy'),
+            'cookiePolicyNewTab' => PolicyLink::opensInNewTab($privacySettings, 'cookie_policy'),
             'appearance' => $appearance,
             'cssVars' => Appearance::cssVariables($appearance),
-            'copy' => [
-                'title' => (string) __('vcookiebar::runtime.banner.title'),
-                'message' => (string) __('vcookiebar::runtime.banner.message'),
-                'acceptAll' => (string) __('vcookiebar::runtime.banner.accept_all'),
-                'rejectOptional' => (string) __('vcookiebar::runtime.banner.reject_optional'),
-                'customize' => (string) __('vcookiebar::runtime.banner.customize'),
-                'save' => (string) __('vcookiebar::runtime.banner.save'),
-                'privacy' => (string) __('vcookiebar::runtime.banner.privacy'),
-                'cookiePolicy' => (string) __('vcookiebar::runtime.banner.cookie_policy'),
-                'error' => (string) __('vcookiebar::runtime.banner.error'),
-                'reopen' => (string) __('vcookiebar::runtime.banner.reopen'),
-            ],
+            'copy' => SettingsStore::resolveCopy($settings),
         ];
     }
 }

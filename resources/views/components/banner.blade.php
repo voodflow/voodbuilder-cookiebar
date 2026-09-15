@@ -8,7 +8,7 @@
     $config = Banner::runtimeConfig();
     $appearance = $config['appearance'];
     $placement = $appearance['placement'] ?? 'bottom';
-    $theme = $appearance['theme'] ?? 'auto';
+    $theme = $appearance['theme'] ?? 'base';
     $showBanner = Banner::shouldRender();
     $cssVars = '';
     foreach ($config['cssVars'] as $name => $value) {
@@ -72,12 +72,20 @@
                 <button type="button" class="vcookiebar__btn" data-vcookiebar-reject>
                     {{ $config['copy']['rejectOptional'] }}
                 </button>
-                <button type="button" class="vcookiebar__btn vcookiebar__btn--ghost" data-vcookiebar-customize>
+                <button
+                    type="button"
+                    class="vcookiebar__btn vcookiebar__btn--ghost"
+                    data-vcookiebar-customize
+                    data-label-collapsed="{{ $config['copy']['customize'] }}"
+                    data-label-expanded="{{ $config['copy']['hideDetails'] }}"
+                    aria-expanded="false"
+                    aria-controls="vcookiebar-prefs"
+                >
                     {{ $config['copy']['customize'] }}
                 </button>
             </div>
 
-            <form class="vcookiebar__prefs" data-vcookiebar-prefs hidden>
+            <form id="vcookiebar-prefs" class="vcookiebar__prefs" data-vcookiebar-prefs hidden>
                 <ul class="vcookiebar__list">
                     @foreach ($config['categories'] as $category)
                         <li class="vcookiebar__item">

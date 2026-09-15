@@ -17,7 +17,37 @@
         pointer-events: none;
     }
 
-    /* Voodflow / Voodbuilder theme tokens */
+    /* Base: packaged light palette (defaults on .vcookiebar-shell) + dark preset */
+    html.dark .vcookiebar-shell--theme-base,
+    html.dark .vcookiebar-shell--theme-auto {
+        --vcb-panel-bg: #111827;
+        --vcb-text: #f9fafb;
+        --vcb-muted: #d1d5db;
+        --vcb-border: rgba(255, 255, 255, 0.12);
+        --vcb-btn-bg: #1f2937;
+        --vcb-btn-text: #f9fafb;
+        --vcb-btn-primary-bg: #f9fafb;
+        --vcb-btn-primary-text: #111827;
+        --vcb-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .vcookiebar-shell--theme-base,
+        .vcookiebar-shell--theme-auto {
+            --vcb-panel-bg: #111827;
+            --vcb-text: #f9fafb;
+            --vcb-muted: #d1d5db;
+            --vcb-border: rgba(255, 255, 255, 0.12);
+            --vcb-btn-bg: #1f2937;
+            --vcb-btn-text: #f9fafb;
+            --vcb-btn-primary-bg: #f9fafb;
+            --vcb-btn-primary-text: #111827;
+            --vcb-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+        }
+    }
+
+    /* VoodBuilder: inherit page theme tokens (+ legacy voodflow class) */
+    .vcookiebar-shell--theme-voodbuilder,
     .vcookiebar-shell--theme-voodflow {
         --vcb-panel-bg: var(--color-vp-bg-elv, var(--color-vp-bg, #fff));
         --vcb-text: var(--color-vp-text-1, #111827);
@@ -29,8 +59,8 @@
         --vcb-btn-primary-text: #fff;
     }
 
-    html.dark .vcookiebar-shell--theme-voodflow,
-    html.dark .vcookiebar-shell--theme-auto {
+    html.dark .vcookiebar-shell--theme-voodbuilder,
+    html.dark .vcookiebar-shell--theme-voodflow {
         --vcb-panel-bg: var(--color-vp-bg-elv, #111827);
         --vcb-text: var(--color-vp-text-1, #f9fafb);
         --vcb-muted: var(--color-vp-text-2, #d1d5db);
@@ -40,20 +70,6 @@
         --vcb-btn-primary-bg: var(--color-vp-brand-1, #f9fafb);
         --vcb-btn-primary-text: var(--color-vp-bg, #111827);
         --vcb-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-    }
-
-    @media (prefers-color-scheme: dark) {
-        .vcookiebar-shell--theme-auto:not(.vcookiebar-shell--theme-voodflow) {
-            --vcb-panel-bg: #111827;
-            --vcb-text: #f9fafb;
-            --vcb-muted: #d1d5db;
-            --vcb-border: rgba(255, 255, 255, 0.12);
-            --vcb-btn-bg: #1f2937;
-            --vcb-btn-text: #f9fafb;
-            --vcb-btn-primary-bg: #f9fafb;
-            --vcb-btn-primary-text: #111827;
-            --vcb-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-        }
     }
 
     .vcookiebar {
@@ -76,7 +92,7 @@
         position: fixed;
         bottom: var(--vcb-inset);
         padding: 0;
-        width: min(24rem, calc(100vw - 2 * var(--vcb-inset)));
+        width: min(28rem, calc(100vw - 2 * var(--vcb-inset)));
     }
     .vcookiebar-shell--bottom-right .vcookiebar { right: var(--vcb-inset); left: auto; }
     .vcookiebar-shell--bottom-left .vcookiebar { left: var(--vcb-inset); right: auto; }
@@ -121,6 +137,21 @@
         gap: 0.5rem;
         margin-top: 1rem;
     }
+    /* Corner placements: keep primary actions on one row */
+    .vcookiebar-shell--bottom-right .vcookiebar__actions[data-vcookiebar-actions],
+    .vcookiebar-shell--bottom-left .vcookiebar__actions[data-vcookiebar-actions] {
+        flex-wrap: nowrap;
+        align-items: stretch;
+    }
+    .vcookiebar-shell--bottom-right .vcookiebar__actions[data-vcookiebar-actions] .vcookiebar__btn,
+    .vcookiebar-shell--bottom-left .vcookiebar__actions[data-vcookiebar-actions] .vcookiebar__btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0.5rem 0.4rem;
+        font-size: 0.8rem;
+        text-align: center;
+        white-space: nowrap;
+    }
     .vcookiebar__btn {
         appearance: none;
         border: 1px solid var(--vcb-border);
@@ -146,6 +177,9 @@
         margin-top: 1rem;
         padding-top: 1rem;
         border-top: 1px solid var(--vcb-border);
+    }
+    .vcookiebar__prefs[hidden] {
+        display: none !important;
     }
     .vcookiebar__list {
         list-style: none;

@@ -1,8 +1,10 @@
 # Vcookiebar documentation
 
-| Audience | Doc |
-|----------|-----|
-| Sales / listing | [sales/README.md](sales/README.md) |
-| Operators | [user/index.md](user/index.md) |
-| Developers | [developer/README.md](developer/README.md) · [developer/index.md](developer/index.md) |
-| Release | [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) |
+Public documentation lives in the package [README](../README.md).
+
+| Extra | Path |
+|-------|------|
+| Changelog | [../CHANGELOG.md](../CHANGELOG.md) |
+| Security | [../SECURITY.md](../SECURITY.md) |
+| Release checklist | [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) |
+| Promo image | [images/promo.png](images/promo.png) |

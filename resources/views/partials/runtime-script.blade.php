@@ -77,6 +77,54 @@
         });
     }
 
+    function cookieMatches(pattern, name) {
+        if (pattern.slice(-1) === '*') {
+            return name.indexOf(pattern.slice(0, -1)) === 0;
+        }
+
+        return name === pattern;
+    }
+
+    function expireCookie(name) {
+        const expired = '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax';
+        document.cookie = name + expired;
+        const host = window.location.hostname;
+        if (host) {
+            document.cookie = name + expired + ';domain=' + host;
+            if (host.indexOf('.') !== -1) {
+                document.cookie = name + expired + ';domain=.' + host.replace(/^www\./, '');
+            }
+        }
+    }
+
+    function clearCategoryCookies(category) {
+        const patterns = (config.cleanupCookies && config.cleanupCookies[category]) || [];
+        if (! patterns.length) return;
+
+        const existing = document.cookie ? document.cookie.split(';') : [];
+        const names = {};
+
+        existing.forEach(function (part) {
+            const name = part.split('=')[0].trim();
+            if (name) names[name] = true;
+        });
+
+        Object.keys(names).forEach(function (name) {
+            patterns.forEach(function (pattern) {
+                if (cookieMatches(pattern, name)) {
+                    expireCookie(name);
+                }
+            });
+        });
+
+        // Also try exact configured names even if not present yet (harmless).
+        patterns.forEach(function (pattern) {
+            if (pattern.slice(-1) !== '*') {
+                expireCookie(pattern);
+            }
+        });
+    }
+
     // Unlock gated nodes marked with data-vcookiebar / data-vcookiebar-category
     // (plain script stubs or template wrappers — never put a closing script tag in this file's comments).
     function activateCategory(category) {
@@ -134,6 +182,8 @@
         Object.keys(preferences).forEach(function (key) {
             if (preferences[key] === true) {
                 activateCategory(key);
+            } else if (key !== 'necessary') {
+                clearCategoryCookies(key);
             }
         });
     }
@@ -145,8 +195,38 @@
         }));
     }
 
+    function syncCustomizeUi() {
+        const customizeBtn = root ? root.querySelector('[data-vcookiebar-customize]') : null;
+        if (! prefsForm || ! customizeBtn) {
+            return;
+        }
+
+        const expanded = ! prefsForm.hidden;
+        customizeBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        const label = expanded
+            ? (customizeBtn.getAttribute('data-label-expanded') || config.copy.hideDetails || '')
+            : (customizeBtn.getAttribute('data-label-collapsed') || config.copy.customize || '');
+        if (label) {
+            customizeBtn.textContent = label;
+        }
+    }
+
+    function setPrefsOpen(open) {
+        if (! prefsForm) {
+            return;
+        }
+        prefsForm.hidden = ! open;
+        if (open) {
+            prefsForm.removeAttribute('hidden');
+        } else {
+            prefsForm.setAttribute('hidden', 'hidden');
+        }
+        syncCustomizeUi();
+    }
+
     function hideBanner() {
         if (root) root.hidden = true;
+        setPrefsOpen(false);
         if (reopenBtn) {
             reopenBtn.hidden = false;
             reopenBtn.removeAttribute('hidden');
@@ -156,7 +236,8 @@
     function showBanner() {
         if (root) {
             root.hidden = false;
-            if (prefsForm) prefsForm.hidden = false;
+            // Collapsed until Customize — keeps label in sync with panel state.
+            setPrefsOpen(false);
             syncFormFromPreferences(window.__vcookiebar.preferences || config.preferences);
         }
         if (reopenBtn) {
@@ -184,9 +265,11 @@
             return response.json();
         }).then(function (payload) {
             const saved = payload && payload.preferences ? payload.preferences : preferences;
+            // Persist + notify, then reload so revoked scripts unload and
+            // gated tags re-evaluate from the consent cookie (GDPR withdrawal).
             publishConsent(saved);
             hideBanner();
-            setBusy(false);
+            window.location.reload();
         }).catch(function () {
             showError(config.copy.error);
             setBusy(false);
@@ -201,7 +284,7 @@
     });
     root?.querySelector('[data-vcookiebar-customize]')?.addEventListener('click', function () {
         if (! prefsForm) return;
-        prefsForm.hidden = ! prefsForm.hidden;
+        setPrefsOpen(prefsForm.hidden);
     });
     prefsForm?.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -222,6 +305,9 @@
         reopenBtn.removeAttribute('hidden');
     }
 
+    // Prefs start collapsed; label matches ("Customize" until opened).
+    setPrefsOpen(false);
+
     window.addEventListener('vcookiebar:consent', function (event) {
         const detail = event?.detail?.preferences;
         if (detail && typeof detail === 'object') {
@@ -229,7 +315,7 @@
         }
     });
 
-    // Public API for hosts / Voodbuilder
+    // Public API for hosts / page builders
     window.__vcookiebar.has = function (category) {
         const prefs = window.__vcookiebar.preferences;
         return Boolean(prefs && prefs[category] === true);
