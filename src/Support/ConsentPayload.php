@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Voodflow\Vcookiebar\Support;
 
+use Illuminate\Support\Str;
 use Voodflow\Vcookiebar\Vcookiebar;
 
 /**
@@ -37,10 +38,11 @@ final class ConsentPayload
     /**
      * @param  array<string, bool>  $preferences
      */
-    public static function encode(array $preferences): string
+    public static function encode(array $preferences, ?string $visitorId = null): string
     {
         $json = json_encode([
-            'v' => 1,
+            'v' => 2,
+            'vid' => $visitorId ?: (string) Str::uuid(),
             'preferences' => $preferences,
             'ts' => time(),
         ], JSON_THROW_ON_ERROR);
@@ -53,6 +55,16 @@ final class ConsentPayload
      */
     public static function decode(?string $payload): ?array
     {
+        $decoded = self::decodeDetailed($payload);
+
+        return $decoded['preferences'] ?? null;
+    }
+
+    /**
+     * @return array{preferences: array<string, bool>, visitor_id: string, ts: int|null}|null
+     */
+    public static function decodeDetailed(?string $payload): ?array
+    {
         if ($payload === null || $payload === '') {
             return null;
         }
@@ -64,7 +76,7 @@ final class ConsentPayload
                 return null;
             }
 
-            /** @var array{v?: mixed, preferences?: mixed}|null $data */
+            /** @var array{v?: mixed, vid?: mixed, preferences?: mixed, ts?: mixed}|null $data */
             $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException) {
             return null;
@@ -76,7 +88,14 @@ final class ConsentPayload
 
         /** @var array<string, mixed> $preferences */
         $preferences = $data['preferences'];
+        $visitorId = is_string($data['vid'] ?? null) && $data['vid'] !== ''
+            ? $data['vid']
+            : (string) Str::uuid();
 
-        return self::normalize($preferences);
+        return [
+            'preferences' => self::normalize($preferences),
+            'visitor_id' => $visitorId,
+            'ts' => is_numeric($data['ts'] ?? null) ? (int) $data['ts'] : null,
+        ];
     }
 }

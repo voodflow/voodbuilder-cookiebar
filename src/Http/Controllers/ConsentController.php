@@ -8,7 +8,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Voodflow\Vcookiebar\Events\VisitorConsentSaved;
 use Voodflow\Vcookiebar\Support\ConsentPayload;
 use Voodflow\Vcookiebar\Vcookiebar;
 
@@ -61,7 +64,10 @@ final class ConsentController extends Controller
         $cookieName = (string) config('vcookiebar.consent_cookie', 'vcookiebar_consent');
         $lifetime = max(1, (int) config('vcookiebar.consent_lifetime_minutes', 60 * 24 * 365));
 
-        $payload = ConsentPayload::encode($normalized);
+        $existing = ConsentPayload::decodeDetailed($request->cookie($cookieName));
+        $visitorId = $existing['visitor_id'] ?? (string) Str::uuid();
+
+        $payload = ConsentPayload::encode($normalized, $visitorId);
 
         Cookie::queue(
             cookie(
@@ -74,9 +80,17 @@ final class ConsentController extends Controller
             ),
         );
 
+        Event::dispatch(new VisitorConsentSaved(
+            preferences: $normalized,
+            visitorId: $visitorId,
+            ipHash: $request->ip() !== null ? hash('sha256', $request->ip()) : null,
+            userAgentHash: is_string($request->userAgent()) ? hash('sha256', $request->userAgent()) : null,
+        ));
+
         return response()->json([
             'ok' => true,
             'preferences' => $normalized,
+            'visitor_id' => $visitorId,
         ]);
     }
 }

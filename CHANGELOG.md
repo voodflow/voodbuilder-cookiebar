@@ -1,3 +1,13 @@
+## [0.2.2] - 2026-09-16
+
+### Added
+
+- Anonymous `visitor_id` in consent cookie payload (v2) and `VisitorConsentSaved` event for companions (e.g. VoodPrivacy per-visitor evidence)
+
+### Changed
+
+- Consent cookie encode/decode preserves visitor id across preference updates
+
 ## [0.2.1] - 2026-09-16
 
 ### Changed

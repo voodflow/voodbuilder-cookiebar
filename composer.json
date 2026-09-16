@@ -1,7 +1,7 @@
 {
     "name": "voodflow/vcookiebar",
     "description": "Cookie consent for Laravel and Filament 5 \u2014 GDPR opt-in banner, script gating, multilingual admin settings. Standalone MIT; optional VoodBuilder theme.",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "type": "library",
     "license": "MIT",
     "keywords": [
