@@ -1,6 +1,6 @@
 # VoodCookie (`voodflow/vcookiebar`)
 
-<img class="filament-hidden" src="docs/images/promo.png" alt="VoodCookie — Filament Cookie Consent by VoodFlow" />
+<img class="filament-hidden" src="https://raw.githubusercontent.com/voodflow/voodflow-public-docs/main/vcookiebar/images/promo.png" alt="VoodCookie — Filament Cookie Consent by VoodFlow" />
 
 **Cookie consent** for Laravel + Filament 5: opt-in preferences UI, real script gating, and a Filament settings page. Works **standalone** in any Filament app — no page builder required.
 
