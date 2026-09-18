@@ -4,7 +4,7 @@
 
 **Cookie consent** for Laravel + Filament 5: opt-in preferences UI, real script gating, and a Filament settings page. Works **standalone** in any Filament app — no page builder required.
 
-MIT licensed. Free to use, modify, and ship.
+MIT.
 
 ## Features
 
