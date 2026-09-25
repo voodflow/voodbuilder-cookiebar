@@ -1,3 +1,10 @@
+## [0.2.3] - 2026-09-25
+
+### Changed
+
+- Package health: security policy, Dependabot with update cooldown, pinned GitHub Actions, lean Composer dist (`export-ignore`)
+- Laravel Pint added (`composer format`) and applied — formatting only, no behaviour change
+
 ## [0.2.2] - 2026-09-16
 
 ### Added
