@@ -17,8 +17,7 @@ class CopyTranslationTest extends TestCase
 
         SettingsStore::forget();
         config([
-            'vcookiebar.content_locales' => ['en', 'it', 'de'],
-            'app.locale' => 'en',
+            'app.default_locale' => 'en',
             'app.locales' => [
                 'en' => 'English',
                 'it' => 'Italiano',

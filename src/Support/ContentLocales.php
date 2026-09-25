@@ -4,199 +4,123 @@ declare(strict_types=1);
 
 namespace Voodflow\Vcookiebar\Support;
 
+use Locale;
+
 /**
- * Discovers which locales the host site actually uses.
+ * Site languages, defined once by the host app (`APP_LOCALES` / `APP_LOCALE` in .env,
+ * exposed as `config('app.locales')` and `config('app.default_locale')`).
  *
- * Priority (no plugin classes):
- * 1. explicit `vcookiebar.content_locales`
- * 2. `config('app.locales')`
- * 3. `config('cosmolab.locales')` (host app config, if present)
- * 4. `vcookiebar.site_locales` / `APP_LOCALES` (comma-separated)
- * 5. `app.locale` alone
- *
- * Banner text translations are derived on demand (like SitePage), not
- * pre-created for every site locale.
+ * Packages never define their own language list. Do not use runtime app()->getLocale() /
+ * config('app.locale') as the site default: request middleware sets those to the visitor locale.
  */
 final class ContentLocales
 {
     /**
-     * @return list<string>
-     */
-    public static function codes(): array
-    {
-        $configured = config('vcookiebar.content_locales');
-
-        if (is_array($configured) && $configured !== []) {
-            return self::normalizeList($configured);
-        }
-
-        return self::discover();
-    }
-
-    /**
-     * Default / primary locale for the host site.
-     */
-    public static function default(): string
-    {
-        $codes = self::codes();
-
-        foreach ([
-            config('app.locale'),
-            config('cosmolab.default_locale'),
-        ] as $candidate) {
-            $locale = trim((string) $candidate);
-
-            if ($locale !== '' && in_array($locale, $codes, true)) {
-                return $locale;
-            }
-        }
-
-        return $codes[0] ?? 'en';
-    }
-
-    /**
-     * Locale code => human label for Filament UI.
-     *
-     * @return array<string, string>
+     * @return array<string, string> locale code => label
      */
     public static function options(): array
     {
-        $labels = self::discoverLabels();
-        $options = [];
+        $configured = self::normalize(config('app.locales'));
 
-        foreach (self::codes() as $code) {
-            $options[$code] = $labels[$code] ?? self::fallbackLabel($code);
+        if ($configured !== []) {
+            return $configured;
         }
 
-        return $options;
+        $fallback = self::configuredDefault() ?? 'en';
+
+        return [$fallback => self::labelFor($fallback)];
     }
 
-    public static function label(string $locale): string
+    /** @return list<string> */
+    public static function codes(): array
     {
-        return self::options()[$locale] ?? self::fallbackLabel($locale);
+        return array_keys(self::options());
     }
 
-    /**
-     * @return list<string>
-     */
-    private static function discover(): array
+    public static function default(): string
     {
-        foreach ([
-            config('app.locales'),
-            config('cosmolab.locales'),
-        ] as $candidate) {
-            $map = self::normalizeMap($candidate);
+        $codes = self::codes();
+        $configured = self::configuredDefault();
 
-            if ($map !== []) {
-                return array_keys($map);
-            }
-        }
-
-        $fromEnv = self::normalizeEnvList(config('vcookiebar.site_locales'));
-
-        if ($fromEnv !== []) {
-            return $fromEnv;
-        }
-
-        $locale = trim((string) config('app.locale', 'en'));
-
-        return [$locale !== '' ? $locale : 'en'];
+        return $configured !== null && in_array($configured, $codes, true)
+            ? $configured
+            : $codes[0];
     }
 
-    /**
-     * @return array<string, string>
-     */
-    private static function discoverLabels(): array
+    public static function isValid(string $locale): bool
     {
-        foreach ([
-            config('app.locales'),
-            config('cosmolab.locales'),
-        ] as $candidate) {
-            $map = self::normalizeMap($candidate);
-
-            if ($map !== []) {
-                return $map;
-            }
-        }
-
-        $options = [];
-
-        foreach (self::codes() as $code) {
-            $options[$code] = self::fallbackLabel($code);
-        }
-
-        return $options;
+        return in_array($locale, self::codes(), true);
     }
 
-    /**
-     * @return list<string>
-     */
-    private static function normalizeList(mixed $configured): array
+    /** @return list<string> */
+    public static function nonDefaultCodes(): array
     {
-        if (! is_array($configured)) {
-            return [];
-        }
+        $default = self::default();
 
         return array_values(array_filter(
-            $configured,
-            static fn (mixed $value): bool => is_string($value) && $value !== '',
+            self::codes(),
+            fn (string $code): bool => $code !== $default,
         ));
     }
 
-    /**
-     * @return list<string>
-     */
-    private static function normalizeEnvList(mixed $value): array
+    public static function labelFor(string $locale): string
     {
-        if (is_array($value)) {
-            return self::normalizeList($value);
+        if (class_exists(Locale::class)) {
+            $label = Locale::getDisplayLanguage($locale, $locale);
+
+            if (is_string($label) && $label !== '' && $label !== $locale) {
+                return mb_convert_case($label, MB_CASE_TITLE, 'UTF-8');
+            }
         }
 
-        if (! is_string($value) || trim($value) === '') {
-            return [];
+        return strtoupper($locale);
+    }
+
+    private static function configuredDefault(): ?string
+    {
+        foreach ([config('app.default_locale'), config('app.fallback_locale')] as $candidate) {
+            if (is_string($candidate) && trim($candidate) !== '') {
+                return trim($candidate);
+            }
         }
 
-        return array_values(array_filter(array_map(
-            static fn (string $part): string => trim($part),
-            explode(',', $value),
-        )));
+        return null;
     }
 
     /**
+     * Accepts `en,it`, `['en', 'it']` or `['en' => 'English', 'it' => 'Italiano']`.
+     *
      * @return array<string, string>
      */
-    private static function normalizeMap(mixed $configured): array
+    private static function normalize(mixed $configured): array
     {
-        if (! is_array($configured) || $configured === []) {
+        if (is_string($configured)) {
+            $configured = explode(',', $configured);
+        }
+
+        if (! is_array($configured)) {
             return [];
         }
 
         $locales = [];
 
         foreach ($configured as $code => $label) {
-            if (is_int($code) && is_string($label) && $label !== '') {
-                $locales[$label] = self::fallbackLabel($label);
+            if (is_int($code) && is_string($label) && trim($label) !== '') {
+                $locales[trim($label)] = self::labelFor(trim($label));
 
                 continue;
             }
 
-            if (is_string($code) && $code !== '' && is_string($label) && $label !== '') {
-                $locales[$code] = $label;
+            if (is_string($code) && trim($code) !== '' && is_string($label) && $label !== '') {
+                $locales[trim($code)] = $label;
             }
         }
 
         return $locales;
     }
 
-    private static function fallbackLabel(string $locale): string
+    public static function label(string $locale): string
     {
-        return match ($locale) {
-            'en' => 'English',
-            'it' => 'Italiano',
-            'de' => 'Deutsch',
-            'es' => 'Español',
-            'fr' => 'Français',
-            default => strtoupper($locale),
-        };
+        return self::options()[$locale] ?? self::labelFor($locale);
     }
 }

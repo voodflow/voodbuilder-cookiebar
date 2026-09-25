@@ -1,3 +1,13 @@
+## [0.2.4] - 2026-09-25
+
+### Changed
+
+- Site languages come only from the host app: `APP_LOCALES` / `APP_LOCALE` in `.env` (read via `config('app.locales')` / `config('app.default_locale')`). Removed `vcookiebar.content_locales` / `vcookiebar.site_locales`.
+
+### Upgrade
+
+- Add `'locales' => env('APP_LOCALES', env('APP_LOCALE', 'en'))` and `'default_locale' => env('APP_LOCALE', 'en')` to the host `config/app.php`, set `APP_LOCALES=en,it` (comma separated) and drop language keys from the published package config.
+
 ## [0.2.3] - 2026-09-25
 
 ### Changed

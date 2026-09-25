@@ -9,56 +9,41 @@ use Voodflow\Vcookiebar\Tests\TestCase;
 
 class ContentLocalesTest extends TestCase
 {
-    public function test_explicit_config_overrides_discovery(): void
-    {
-        config(['vcookiebar.content_locales' => ['it', 'de']]);
-
-        $this->assertSame(['it', 'de'], ContentLocales::codes());
-    }
-
-    public function test_discovers_app_locales_without_plugins(): void
+    public function test_uses_host_app_locales_and_default(): void
     {
         config([
-            'vcookiebar.content_locales' => null,
-            'vcookiebar.site_locales' => null,
             'app.locales' => [
                 'en' => 'English',
                 'it' => 'Italiano',
             ],
-            'app.locale' => 'en',
-            'cosmolab.locales' => null,
+            'app.default_locale' => 'it',
+            'vcookiebar.content_locales' => ['de'],
         ]);
 
+        app()->setLocale('en');
+
         $this->assertSame(['en', 'it'], ContentLocales::codes());
-        $this->assertSame('en', ContentLocales::default());
+        $this->assertSame('it', ContentLocales::default());
+        $this->assertSame('Italiano', ContentLocales::label('it'));
     }
 
-    public function test_falls_back_to_app_locales_env_list(): void
+    public function test_reads_comma_separated_env_list(): void
     {
         config([
-            'vcookiebar.content_locales' => null,
-            'vcookiebar.site_locales' => 'en,fr',
-            'app.locales' => null,
-            'cosmolab.locales' => null,
-            'app.locale' => 'en',
+            'app.locales' => 'en, fr',
+            'app.default_locale' => 'en',
         ]);
 
         $this->assertSame(['en', 'fr'], ContentLocales::codes());
     }
 
-    public function test_options_include_human_labels(): void
+    public function test_falls_back_to_default_locale_when_list_missing(): void
     {
         config([
-            'vcookiebar.content_locales' => ['en', 'it'],
-            'app.locales' => [
-                'en' => 'English',
-                'it' => 'Italiano',
-            ],
+            'app.locales' => null,
+            'app.default_locale' => 'en',
         ]);
 
-        $options = ContentLocales::options();
-
-        $this->assertSame('English', $options['en']);
-        $this->assertSame('Italiano', $options['it']);
+        $this->assertSame(['en'], ContentLocales::codes());
     }
 }

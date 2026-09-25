@@ -144,8 +144,6 @@ Publish `config/vcookiebar.php`. Useful keys / env:
 | `auto_inject` / `VCOOKIEBAR_AUTO_INJECT` | Push banner into configured views |
 | `auto_inject_views` | View names that receive the banner |
 | `cleanup_cookies` | Names / prefixes to expire when a category is off |
-| `content_locales` | Optional explicit locale list. Leave `null` to discover from the host (`app.locales` → `cosmolab.locales` → `APP_LOCALES` → `app.locale`) |
-| `site_locales` / `APP_LOCALES` | Optional comma-separated locales from `.env` when `app.locales` is empty |
 | `appearance.theme` | `base` \| `voodbuilder` \| `custom` (legacy: `auto`→`base`, `voodflow`→`voodbuilder`) |
 | `appearance.*` | Placement, colors, reopen icon |
 

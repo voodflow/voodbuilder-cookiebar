@@ -148,28 +148,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Locales for Filament banner text translations
-    |--------------------------------------------------------------------------
-    |
-    | null / empty = discover from the host site only (no plugins):
-    |   app.locales → cosmolab.locales → APP_LOCALES → app.locale
-    | Set an explicit list only to force a subset.
-    |
-    */
-    'content_locales' => null,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Optional comma-separated site locales from .env (APP_LOCALES=en,it)
-    |--------------------------------------------------------------------------
-    |
-    | Used when app.locales / cosmolab.locales are empty.
-    |
-    */
-    'site_locales' => env('APP_LOCALES'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Public banner
     |--------------------------------------------------------------------------
     */
