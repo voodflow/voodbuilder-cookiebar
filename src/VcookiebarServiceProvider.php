@@ -29,7 +29,7 @@ class VcookiebarServiceProvider extends PackageServiceProvider
     {
         // Register lang early so Filament pages never see missing-key fallbacks
         // when a stale published lang file omits new keys.
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'vcookiebar');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'vcookiebar');
     }
 
     public function packageBooted(): void

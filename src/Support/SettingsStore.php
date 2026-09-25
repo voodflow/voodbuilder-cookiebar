@@ -265,7 +265,7 @@ final class SettingsStore
             $override = $fields[$storageKey] ?? null;
             $resolved[$runtimeKey] = filled($override)
                 ? (string) $override
-                : (string) __('vcookiebar::runtime.banner.'.$storageKey);
+                : (string) __('vcookiebar::runtime.banner.' . $storageKey);
         }
 
         $resolved['hideDetails'] = (string) __('vcookiebar::runtime.banner.hide_details');

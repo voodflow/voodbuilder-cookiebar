@@ -23,8 +23,8 @@ final class PolicyLink
      */
     public static function resolve(array $settings, string $prefix, ?string $legacyUrlKey = null): ?string
     {
-        $type = strtolower(trim((string) ($settings[$prefix.'_link_type'] ?? '')));
-        $target = trim((string) ($settings[$prefix.'_link'] ?? ''));
+        $type = strtolower(trim((string) ($settings[$prefix . '_link_type'] ?? '')));
+        $target = trim((string) ($settings[$prefix . '_link'] ?? ''));
 
         if ($target === '' && $legacyUrlKey !== null) {
             $legacy = trim((string) ($settings[$legacyUrlKey] ?? ''));
@@ -44,14 +44,14 @@ final class PolicyLink
         return match ($type) {
             'page' => self::resolvePage($target),
             'menu' => self::resolveMenuItem($target),
-            'path' => self::normalizeUrl(str_starts_with($target, '/') ? $target : '/'.$target),
+            'path' => self::normalizeUrl(str_starts_with($target, '/') ? $target : '/' . $target),
             default => self::normalizeUrl($target),
         };
     }
 
     public static function opensInNewTab(array $settings, string $prefix): bool
     {
-        $target = (string) ($settings[$prefix.'_open_in'] ?? '');
+        $target = (string) ($settings[$prefix . '_open_in'] ?? '');
 
         return $target === '_blank';
     }
@@ -76,9 +76,9 @@ final class PolicyLink
      */
     public static function extract(array $data, string $prefix): array
     {
-        $type = strtolower(trim((string) ($data[$prefix.'_link_type'] ?? '')));
-        $link = trim((string) ($data[$prefix.'_link'] ?? ''));
-        $openIn = (string) ($data[$prefix.'_open_in'] ?? '');
+        $type = strtolower(trim((string) ($data[$prefix . '_link_type'] ?? '')));
+        $link = trim((string) ($data[$prefix . '_link'] ?? ''));
+        $openIn = (string) ($data[$prefix . '_open_in'] ?? '');
 
         $allowed = ['url', 'path', 'page', 'menu'];
         if (! in_array($type, $allowed, true)) {
@@ -90,9 +90,9 @@ final class PolicyLink
         }
 
         return [
-            $prefix.'_link_type' => $type,
-            $prefix.'_link' => $link !== '' ? mb_substr($link, 0, 2048) : null,
-            $prefix.'_open_in' => $openIn,
+            $prefix . '_link_type' => $type,
+            $prefix . '_link' => $link !== '' ? mb_substr($link, 0, 2048) : null,
+            $prefix . '_open_in' => $openIn,
         ];
     }
 
@@ -100,7 +100,7 @@ final class PolicyLink
     {
         $pageClass = 'Voodflow\\Voodbuilder\\Models\\SitePage';
         if (! class_exists($pageClass)) {
-            return self::normalizeUrl('/'.ltrim($target, '/'));
+            return self::normalizeUrl('/' . ltrim($target, '/'));
         }
 
         $page = self::findPage($pageClass, $target);

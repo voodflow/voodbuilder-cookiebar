@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Voodflow\Vcookiebar\Support;
 
+use Voodflow\Voodbuilder\Support\ThemePalette;
+use Voodflow\Voodbuilder\Voodbuilder;
+
 /**
  * Banner placement and color tokens for public runtime.
  */
@@ -62,8 +65,8 @@ final class Appearance
      */
     public static function hasVoodbuilder(): bool
     {
-        return class_exists(\Voodflow\Voodbuilder\Voodbuilder::class)
-            || class_exists(\Voodflow\Voodbuilder\Support\ThemePalette::class);
+        return class_exists(Voodbuilder::class)
+            || class_exists(ThemePalette::class);
     }
 
     /**
@@ -71,8 +74,8 @@ final class Appearance
      */
     public static function hasVoodbuilderLoaded(): bool
     {
-        return class_exists(\Voodflow\Voodbuilder\Voodbuilder::class, false)
-            || class_exists(\Voodflow\Voodbuilder\Support\ThemePalette::class, false);
+        return class_exists(Voodbuilder::class, false)
+            || class_exists(ThemePalette::class, false);
     }
 
     /**
@@ -136,7 +139,7 @@ final class Appearance
 
         $color = strtolower(trim($raw));
         if ($color[0] !== '#') {
-            $color = '#'.$color;
+            $color = '#' . $color;
         }
 
         if (preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/', $color) !== 1) {
@@ -144,7 +147,7 @@ final class Appearance
         }
 
         if (strlen($color) === 4) {
-            return '#'.$color[1].$color[1].$color[2].$color[2].$color[3].$color[3];
+            return '#' . $color[1] . $color[1] . $color[2] . $color[2] . $color[3] . $color[3];
         }
 
         return $color;

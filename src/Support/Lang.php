@@ -11,7 +11,7 @@ final class Lang
 {
     public static function get(string $key, ?string $fallback = null, array $replace = []): string
     {
-        $full = 'vcookiebar::'.$key;
+        $full = 'vcookiebar::' . $key;
         $translated = __($full, $replace);
 
         if ($translated === $full || $translated === $key) {

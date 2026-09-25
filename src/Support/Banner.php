@@ -56,8 +56,8 @@ final class Banner
         foreach ($visibleKeys as $key) {
             $categories[] = [
                 'key' => $key,
-                'label' => (string) __('vcookiebar::runtime.banner.categories.'.$key.'.label'),
-                'description' => (string) __('vcookiebar::runtime.banner.categories.'.$key.'.description'),
+                'label' => (string) __('vcookiebar::runtime.banner.categories.' . $key . '.label'),
+                'description' => (string) __('vcookiebar::runtime.banner.categories.' . $key . '.description'),
                 'locked' => $key === 'necessary',
             ];
         }

@@ -57,7 +57,7 @@ class EditorContextOptOutTest extends TestCase
         $app['config']->set('vcookiebar.auto_inject', true);
         $app['config']->set('vcookiebar.auto_inject_views', ['host-layout']);
         $app['config']->set('view.paths', [
-            __DIR__.'/../fixtures/views',
+            __DIR__ . '/../fixtures/views',
             ...(array) $app['config']->get('view.paths', []),
         ]);
     }

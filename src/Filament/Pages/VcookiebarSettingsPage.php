@@ -23,6 +23,7 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Voodflow\Vcookiebar\Filament\Forms\PolicyLinkFields;
@@ -43,7 +44,7 @@ use Voodflow\Vcookiebar\Support\SettingsStore;
  */
 class VcookiebarSettingsPage extends Page
 {
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shield-check';
 
     protected static ?int $navigationSort = 90;
 
@@ -218,7 +219,7 @@ class VcookiebarSettingsPage extends Page
                                     }),
                                 Placeholder::make('copy_translation_links')
                                     ->label(Lang::get('admin.fields.translations', 'Translations'))
-                                    ->content(fn (): HtmlString|string => $this->translationLinksContent())
+                                    ->content(fn (): HtmlString | string => $this->translationLinksContent())
                                     ->columnSpan([
                                         'default' => 1,
                                         'lg' => 5,
@@ -277,7 +278,7 @@ class VcookiebarSettingsPage extends Page
                                             $this->reloadFormForLocale(SettingsStore::copyPrimaryLocale(SettingsStore::all()));
                                         }),
                                 ])
-                                    ->verticalAlignment(\Filament\Support\Enums\VerticalAlignment::End)
+                                    ->verticalAlignment(VerticalAlignment::End)
                                     ->columnSpan([
                                         'default' => 1,
                                         'lg' => 3,
@@ -451,7 +452,7 @@ class VcookiebarSettingsPage extends Page
             $label = ContentLocales::label($code);
 
             if ($code === SettingsStore::copyPrimaryLocale($settings)) {
-                $label .= ' ('.Lang::get('admin.fields.primary_locale_badge', 'primary').')';
+                $label .= ' (' . Lang::get('admin.fields.primary_locale_badge', 'primary') . ')';
             }
 
             $options[$code] = $label;
@@ -460,7 +461,7 @@ class VcookiebarSettingsPage extends Page
         return $options;
     }
 
-    private function translationLinksContent(): HtmlString|string
+    private function translationLinksContent(): HtmlString | string
     {
         $settings = SettingsStore::all();
         $primary = SettingsStore::copyPrimaryLocale($settings);
@@ -478,12 +479,12 @@ class VcookiebarSettingsPage extends Page
                 $label = ContentLocales::label($code);
 
                 if ($code === $primary) {
-                    $label .= ' ('.Lang::get('admin.fields.primary_locale_badge', 'primary').')';
+                    $label .= ' (' . Lang::get('admin.fields.primary_locale_badge', 'primary') . ')';
                 }
 
-                return '<button type="button" wire:click="switchCopyLocale(\''.e($code).'\')" class="text-primary-600 hover:underline dark:text-primary-400">'
-                    .e($label)
-                    .'</button>';
+                return '<button type="button" wire:click="switchCopyLocale(\'' . e($code) . '\')" class="text-primary-600 hover:underline dark:text-primary-400">'
+                    . e($label)
+                    . '</button>';
             })
             ->implode(' · ');
 
@@ -522,7 +523,7 @@ class VcookiebarSettingsPage extends Page
             ]);
     }
 
-    public function getTitle(): string|Htmlable
+    public function getTitle(): string | Htmlable
     {
         return Lang::get('admin.pages.settings_title', 'Vcookiebar settings');
     }

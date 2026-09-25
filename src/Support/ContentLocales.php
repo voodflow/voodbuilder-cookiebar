@@ -129,7 +129,6 @@ final class ContentLocales
     }
 
     /**
-     * @param  mixed  $configured
      * @return list<string>
      */
     private static function normalizeList(mixed $configured): array
@@ -145,7 +144,6 @@ final class ContentLocales
     }
 
     /**
-     * @param  mixed  $value
      * @return list<string>
      */
     private static function normalizeEnvList(mixed $value): array
@@ -165,7 +163,6 @@ final class ContentLocales
     }
 
     /**
-     * @param  mixed  $configured
      * @return array<string, string>
      */
     private static function normalizeMap(mixed $configured): array

@@ -13,7 +13,7 @@ return [
         'settings_title' => 'Vcookiebar settings',
     ],
 
-        'tabs' => [
+    'tabs' => [
         'general' => 'General',
         'content' => 'Banner texts',
         'copy_texts' => 'Texts',

@@ -28,7 +28,7 @@ final class PolicyLinkFields
     public static function fields(string $prefix, string $statePath = ''): array
     {
         $hasBuilder = class_exists('Voodflow\\Voodbuilder\\Support\\Editor\\EditorLinkTargets');
-        $base = $statePath !== '' ? rtrim($statePath, '.').'.' : '';
+        $base = $statePath !== '' ? rtrim($statePath, '.') . '.' : '';
 
         $typeOptions = $hasBuilder
             ? [
@@ -130,13 +130,13 @@ final class PolicyLinkFields
                 : [strtoupper((string) ($page->locale ?? ''))];
 
             if ($locales !== []) {
-                $label .= ' ('.implode(', ', $locales).')';
+                $label .= ' (' . implode(', ', $locales) . ')';
             }
 
             if ((bool) ($page->is_home ?? false)) {
-                $label .= ' ('.__('Home').')';
+                $label .= ' (' . __('Home') . ')';
             } elseif (! (bool) ($page->published ?? true)) {
-                $label .= ' ('.__('Draft').')';
+                $label .= ' (' . __('Draft') . ')';
             }
 
             $options[$key] = $label;
