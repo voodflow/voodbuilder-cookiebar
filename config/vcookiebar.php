@@ -83,6 +83,8 @@ return [
         'marketing' => [
             '_fbp',
             '_fbc',
+            // VoodBuilder / Vpopups visitor id (site-visit + Trigger Popup).
+            'vpopups_vid',
         ],
     ],
 

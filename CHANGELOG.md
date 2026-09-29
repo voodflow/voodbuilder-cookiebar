@@ -1,3 +1,10 @@
+## [0.2.5] - 2026-09-29
+
+### Added
+
+- `Vcookiebar::allows($category)` for hosts (popups, site-visit, tags) to gate features on opt-in consent
+- Default marketing cleanup list includes `vpopups_vid` (visitor id used by VoodBuilder / Vpopups)
+
 ## [0.2.4] - 2026-09-25
 
 ### Changed

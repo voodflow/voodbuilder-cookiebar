@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Voodflow\Vcookiebar;
 
+use Voodflow\Vcookiebar\Support\Banner;
+
 /**
  * Runtime helpers for the Vcookiebar package.
  *
@@ -41,6 +43,39 @@ final class Vcookiebar
     public static function isEnabled(): bool
     {
         return (bool) config('vcookiebar.enabled', true);
+    }
+
+    /**
+     * Whether the visitor has opted into a category (GDPR opt-in).
+     *
+     * When the package is disabled, returns true so hosts keep their previous
+     * behaviour. When enabled with no consent cookie yet, optional categories
+     * are denied. Necessary is always allowed once a decision exists (and
+     * before any decision, hosts should not rely on optional features).
+     */
+    public static function allows(string $category): bool
+    {
+        if (! self::isEnabled()) {
+            return true;
+        }
+
+        $category = strtolower(trim($category));
+
+        if ($category === '') {
+            return false;
+        }
+
+        $preferences = Banner::currentPreferences();
+
+        if ($preferences === null) {
+            return $category === 'necessary';
+        }
+
+        if ($category === 'necessary') {
+            return true;
+        }
+
+        return ($preferences[$category] ?? false) === true;
     }
 
     /**

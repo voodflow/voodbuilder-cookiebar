@@ -7,6 +7,7 @@ namespace Voodflow\Vcookiebar\Tests\Feature;
 use Voodflow\Vcookiebar\Support\Banner;
 use Voodflow\Vcookiebar\Support\ConsentPayload;
 use Voodflow\Vcookiebar\Tests\TestCase;
+use Voodflow\Vcookiebar\Vcookiebar;
 
 class ConsentBannerTest extends TestCase
 {
@@ -21,6 +22,28 @@ class ConsentBannerTest extends TestCase
         $this->assertStringContainsString('"endpoint"', $html);
         $this->assertTrue(Banner::shouldRender());
         $this->assertTrue(Banner::shouldRenderRuntime());
+        $this->assertFalse(Vcookiebar::allows('marketing'));
+        $this->assertFalse(Vcookiebar::allows('analytics'));
+    }
+
+    public function test_allows_honours_saved_preferences_and_disabled_package(): void
+    {
+        $payload = ConsentPayload::encode([
+            'necessary' => true,
+            'preferences' => false,
+            'analytics' => true,
+            'marketing' => false,
+        ]);
+
+        request()->cookies->set('vcookiebar_consent', $payload);
+
+        $this->assertTrue(Vcookiebar::allows('necessary'));
+        $this->assertTrue(Vcookiebar::allows('analytics'));
+        $this->assertFalse(Vcookiebar::allows('marketing'));
+
+        config(['vcookiebar.enabled' => false]);
+
+        $this->assertTrue(Vcookiebar::allows('marketing'));
     }
 
     public function test_shell_stays_for_script_gate_when_consent_cookie_exists(): void
