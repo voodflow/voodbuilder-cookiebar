@@ -321,5 +321,47 @@
         return Boolean(prefs && prefs[category] === true);
     };
     window.__vcookiebar.open = showBanner;
+
+    function cookiePreferencesTrigger(node) {
+        if (! node || ! node.closest) {
+            return null;
+        }
+
+        const marked = node.closest('[data-cookie-preferences], [data-vcookiebar-open]');
+        if (marked) {
+            return marked;
+        }
+
+        const link = node.closest('a[href]');
+        if (! link) {
+            return null;
+        }
+
+        const href = link.getAttribute('href') || '';
+        try {
+            const url = new URL(href, window.location.href);
+            if (url.hash === '#cookie-preferences' || url.hash === '#vcookiebar') {
+                return link;
+            }
+        } catch (err) {
+            if (href === '#cookie-preferences' || href === '#vcookiebar') {
+                return link;
+            }
+        }
+
+        return null;
+    }
+
+    document.addEventListener('click', function (event) {
+        const target = event.target;
+        if (! (target instanceof Element)) {
+            return;
+        }
+        if (! cookiePreferencesTrigger(target)) {
+            return;
+        }
+        event.preventDefault();
+        showBanner();
+    });
 })();
 </script>

@@ -1,3 +1,9 @@
+## [0.2.6] - 2026-10-06
+
+### Added
+
+- Runtime opens the consent banner from `[data-cookie-preferences]` / `[data-vcookiebar-open]` and from links to `#cookie-preferences` / `#vcookiebar`
+
 ## [0.2.5] - 2026-09-29
 
 ### Added

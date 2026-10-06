@@ -93,6 +93,16 @@ class ConsentBannerTest extends TestCase
         $this->assertArrayHasKey('cookiePolicyUrl', $config);
     }
 
+    public function test_runtime_script_opens_banner_from_cookie_preference_links(): void
+    {
+        $html = view('vcookiebar::components.banner')->render();
+
+        $this->assertStringContainsString('#cookie-preferences', $html);
+        $this->assertStringContainsString('data-cookie-preferences', $html);
+        $this->assertStringContainsString('data-vcookiebar-open', $html);
+        $this->assertStringContainsString('window.__vcookiebar.open', $html);
+    }
+
     public function test_hidden_categories_are_omitted_from_customize_list(): void
     {
         config([
