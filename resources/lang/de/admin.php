@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'navigation' => [
-        'group' => 'Vcookiebar',
+        'group' => 'Voodcookiebar',
         'settings' => 'Einstellungen',
         'label' => 'Cookie Bar',
     ],
