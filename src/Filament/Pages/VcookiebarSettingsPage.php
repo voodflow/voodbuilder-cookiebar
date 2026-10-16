@@ -65,6 +65,27 @@ class VcookiebarSettingsPage extends Page
         return Lang::get('admin.navigation.settings', 'Settings');
     }
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            return false;
+        }
+
+        if (method_exists($user, 'can') && $user->can('View:VcookiebarSettingsPage')) {
+            return true;
+        }
+
+        if (! class_exists(\Spatie\Permission\Models\Permission::class)) {
+            return true;
+        }
+
+        return ! \Spatie\Permission\Models\Permission::query()
+            ->where('name', 'View:VcookiebarSettingsPage')
+            ->exists();
+    }
+
     public function mount(): void
     {
         $settings = SettingsStore::all();

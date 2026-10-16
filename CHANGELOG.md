@@ -1,3 +1,9 @@
+## [0.2.7] - 2026-10-16
+
+### Added
+
+- `VcookiebarSettingsPage::canAccess()` gate: the Filament settings page requires the `View:VcookiebarSettingsPage` permission (Spatie Shield) when permissions are in use, and stays open by default otherwise
+
 ## [0.2.6] - 2026-10-06
 
 ### Added
